@@ -1,4 +1,4 @@
-include ':sdk'
+include ':opencv-sdk'
 include ':app'
-project(':sdk').projectDir = new File(rootDir, 'opencv-4.4.0-android-sdk/sdk/')
+project(':opencv-sdk').projectDir = new File(rootDir, 'opencv-4.4.0-android-sdk/sdk/')
 rootProject.name = "PupilsDetection"
