@@ -1,0 +1,3 @@
+[submodule "opencv-4.4.0-android-sdk"]
+	path = opencv-4.4.0-android-sdk
+	url = https://github.com/DenisBelobrotski/opencv-4.4.0-android-sdk.git
