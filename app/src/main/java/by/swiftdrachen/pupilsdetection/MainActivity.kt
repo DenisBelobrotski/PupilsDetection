@@ -15,8 +15,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-const val FACE_IMAGE_PATH = "test_faces/test_face_3.jpg"
+const val FACE_IMAGE_PATH = "test_faces/test_face_2.jpg"
 const val FACE_CASCADE_PATH = "cascades/haarcascade_frontalface_alt2.xml"
+const val EYE_CASCADE_PATH = "cascades/haarcascade_eye_tree_eyeglasses.xml"
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,33 +32,46 @@ class MainActivity : AppCompatActivity() {
 
         OpenCVLoader.initDebug()
 
-        val faceCascadeAssetUri = Uri.parse(FACE_CASCADE_PATH)
-        val cachedFaceCascadeFile = cacheAssetFile(faceCascadeAssetUri)
+        val faceCascadeClassifier = loadCascadeFromAssets(FACE_CASCADE_PATH)
+        val eyeCascadeClassifier = loadCascadeFromAssets(EYE_CASCADE_PATH)
 
-        val faceCascadeClassifier = CascadeClassifier(cachedFaceCascadeFile.absolutePath)
-        val isEmpty = faceCascadeClassifier.empty()
+        val processingImage = Mat()
+        Utils.bitmapToMat(faceImageBitmap, processingImage)
 
-        if (isEmpty) {
-            throw IOException("Cascade classifier is empty")
+        val facesRectMat = MatOfRect()
+        faceCascadeClassifier.detectMultiScale(processingImage, facesRectMat)
+        val faceRects = facesRectMat.toList()
+
+        faceRects.forEach { faceRect ->
+            val faceHalfSize = Size(
+                faceRect.width.toDouble() * 0.5,
+                faceRect.height.toDouble() * 0.5)
+            val faceCenter = Point(
+                faceRect.x.toDouble() + faceHalfSize.width,
+                faceRect.y.toDouble() + faceHalfSize.height)
+            val faceColor = Scalar(1.0, 1.0, 1.0, 1.0)
+
+            Imgproc.circle(processingImage, faceCenter, faceRect.width / 2, faceColor, 10, 8, 0);
+
+            val faceROI = processingImage.submat(faceRect)
+            val eyesRectMat = MatOfRect()
+            eyeCascadeClassifier.detectMultiScale(faceROI, eyesRectMat)
+            val eyeRects = eyesRectMat.toList()
+
+            eyeRects.forEach{ eyeRect ->
+                val eyeHalfSize = Size(
+                    eyeRect.width.toDouble() * 0.5,
+                    eyeRect.height.toDouble() * 0.5)
+                val eyeCenter = Point(
+                    faceRect.x.toDouble() + eyeRect.x.toDouble() + eyeHalfSize.width,
+                    faceRect.y.toDouble() + eyeRect.y.toDouble() + eyeHalfSize.height)
+                val eyeColor = Scalar(1.0, 1.0, 1.0, 1.0)
+
+                Imgproc.circle(processingImage, eyeCenter, eyeRect.width / 2, eyeColor, 5, 8, 0);
+            }
         }
 
-        val faceMat = Mat()
-        Utils.bitmapToMat(faceImageBitmap, faceMat)
-        val faceRectMat = MatOfRect()
-
-        faceCascadeClassifier.detectMultiScale(faceMat, faceRectMat)
-
-        val faces = faceRectMat.toArray()
-
-        faces.forEach { face ->
-            val halfSize = Size((face.width / 2).toDouble(), (face.height / 2).toDouble())
-            val center = Point(face.x.toDouble() + halfSize.width, face.y.toDouble() + halfSize.height)
-            val color = Scalar(0.0, 0.0, 0.0, 0.0)
-
-            Imgproc.ellipse(faceMat, center, halfSize, 0.0, 0.0, 360.0, color, 10, 8, 0)
-        }
-
-        Utils.matToBitmap(faceMat, faceImageBitmap)
+        Utils.matToBitmap(processingImage, faceImageBitmap)
         faceImageView.setImageBitmap(faceImageBitmap)
     }
 
@@ -98,5 +112,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         return unpackedFile
+    }
+
+    private fun loadCascadeFromAssets(assetPath: String) : CascadeClassifier {
+        val faceCascadeAssetUri = Uri.parse(assetPath)
+        val cachedFaceCascadeFile = cacheAssetFile(faceCascadeAssetUri)
+
+        return loadCascade(cachedFaceCascadeFile)
+    }
+
+    private fun loadCascade(cascadeFile: File) :CascadeClassifier {
+        val faceCascadeClassifier = CascadeClassifier(cascadeFile.absolutePath)
+        val isEmpty = faceCascadeClassifier.empty()
+
+        if (isEmpty) {
+            throw IOException("Cascade classifier is empty")
+        }
+
+        return faceCascadeClassifier
     }
 }
