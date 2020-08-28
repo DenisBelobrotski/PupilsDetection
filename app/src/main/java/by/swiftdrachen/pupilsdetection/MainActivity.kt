@@ -1,41 +1,48 @@
 package by.swiftdrachen.pupilsdetection
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import org.opencv.android.OpenCVLoader
+import org.bytedeco.javacv.OpenCVFrameGrabber
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
+import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 
-const val FACE_IMAGE_PATH = "test_faces/test_face_2.jpg"
-const val FACE_CASCADE_PATH = "cascades/haarcascade_frontalface_alt2.xml"
-const val EYE_CASCADE_PATH = "cascades/haarcascade_eye_tree_eyeglasses.xml"
+private const val FACE_IMAGE_PATH = "test_faces/test_face_2.jpg"
+private const val FACE_CASCADE_PATH = "cascades/haarcascade_frontalface_alt2.xml"
+private const val EYE_CASCADE_PATH = "cascades/haarcascade_eye_tree_eyeglasses.xml"
 
 class MainActivity : AppCompatActivity() {
+
+    private val videoFileChooser by lazy { VideoFileChooser(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-        val faceImageView = findViewById<ImageView>(R.id.face_image_view)
-        val faceImageBitmap = loadBitmap(FACE_IMAGE_PATH)
-        faceImageView.setImageBitmap(faceImageBitmap)
-
-        OpenCVLoader.initDebug()
+        loadOpenCV()
 
         val faceCascadeClassifier = loadCascadeFromAssets(FACE_CASCADE_PATH)
         val eyeCascadeClassifier = loadCascadeFromAssets(EYE_CASCADE_PATH)
 
+        if (faceCascadeClassifier == null || eyeCascadeClassifier == null) {
+            throw IOException("Bad cascade classifiers")
+        }
+
         val processingImage = Mat()
+        val faceImageBitmap = loadBitmap(FACE_IMAGE_PATH)
         Utils.bitmapToMat(faceImageBitmap, processingImage)
 
         val facesRectMat = MatOfRect()
@@ -58,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             eyeCascadeClassifier.detectMultiScale(faceROI, eyesRectMat)
             val eyeRects = eyesRectMat.toList()
 
-            eyeRects.forEach{ eyeRect ->
+            eyeRects.forEach { eyeRect ->
                 val eyeHalfSize = Size(
                     eyeRect.width.toDouble() * 0.5,
                     eyeRect.height.toDouble() * 0.5)
@@ -72,10 +79,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         Utils.matToBitmap(processingImage, faceImageBitmap)
+
+        val faceImageView = findViewById<ImageView>(R.id.face_image_view)
         faceImageView.setImageBitmap(faceImageBitmap)
+
+        val chooseVideoButton = findViewById<Button>(R.id.choose_video_button)
+        chooseVideoButton.setOnClickListener {
+            videoFileChooser.choose()
+        }
+
+        val processVideoButton = findViewById<Button>(R.id.process_video_button)
+        processVideoButton.setOnClickListener {
+            val grabber = OpenCVFrameGrabber(videoFileChooser.lastChosenFile.value)
+            val framesCount = grabber.frameNumber
+            grabber.stop()
+        }
     }
 
-    private fun loadBitmap(assetPath: String) : Bitmap {
+    private fun loadOpenCV() {
+        //OpenCV Android SDK
+//        OpenCVLoader.initDebug()
+
+        //JavaCV library
+        val loader = OpenCVNativeLoader()
+        loader.init()
+    }
+
+    private fun loadBitmap(assetPath: String): Bitmap {
         val assetInputStream = assets.open(assetPath)
         var resultBitmap = BitmapFactory.decodeStream(assetInputStream)
         assetInputStream.close()
@@ -88,40 +118,57 @@ class MainActivity : AppCompatActivity() {
         return resultBitmap
     }
 
-    private fun cacheAssetFile(assetPath: Uri, rewrite: Boolean = false) : File {
-        val assetFileName = assetPath.lastPathSegment
-        val unpackedFile = File(this.cacheDir, assetFileName)
+    private fun cacheAssetFile(assetUri: Uri, rewrite: Boolean = false): File? {
+        val assetPath = assetUri.path
+        val assetFileName = assetUri.lastPathSegment
+        var cachedFile: File? = null
 
-        if (unpackedFile.exists() && rewrite) {
-            unpackedFile.delete()
-        }
-        unpackedFile.createNewFile()
+        assetPath?.let {
+            assetFileName?.let {
+                val inputStream = assets.open(assetPath)
 
-        assetPath.path?.let {
-            val inputStream = assets.open(it)
-            val outputStream = FileOutputStream(unpackedFile)
+                cachedFile = cacheFile(inputStream, assetFileName, rewrite)
 
-            inputStream.use { input ->
-                outputStream.use { output ->
-                    input.copyTo(output)
-                }
+                inputStream.close()
             }
-
-            inputStream.close()
-            outputStream.close()
         }
 
-        return unpackedFile
+        return cachedFile
     }
 
-    private fun loadCascadeFromAssets(assetPath: String) : CascadeClassifier {
+    private fun cacheFile(inputStream: InputStream, outputFileName: String, rewrite: Boolean = false): File {
+        val cachedFile = File(this.cacheDir, outputFileName)
+
+        if (cachedFile.exists() && rewrite) {
+            cachedFile.delete()
+        }
+        cachedFile.createNewFile()
+
+        val outputStream = FileOutputStream(cachedFile)
+
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        outputStream.close()
+
+        return cachedFile
+    }
+
+    private fun loadCascadeFromAssets(assetPath: String): CascadeClassifier? {
         val faceCascadeAssetUri = Uri.parse(assetPath)
         val cachedFaceCascadeFile = cacheAssetFile(faceCascadeAssetUri)
+        var loadedCascade: CascadeClassifier? = null
+        cachedFaceCascadeFile?.let {
+            loadedCascade = loadCascade(cachedFaceCascadeFile)
+        }
 
-        return loadCascade(cachedFaceCascadeFile)
+        return loadedCascade
     }
 
-    private fun loadCascade(cascadeFile: File) :CascadeClassifier {
+    private fun loadCascade(cascadeFile: File): CascadeClassifier {
         val faceCascadeClassifier = CascadeClassifier(cascadeFile.absolutePath)
         val isEmpty = faceCascadeClassifier.empty()
 
@@ -130,5 +177,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         return faceCascadeClassifier
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        videoFileChooser.onActivityResult(requestCode, resultCode, data)
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

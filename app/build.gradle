@@ -34,5 +34,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation project(":opencv-sdk")
+//    implementation project(":opencv-sdk")
+//    implementation "org.bytedeco:javacv-platform:1.5.3"
+//    implementation "org.bytedeco:opencv:4.3.0-1.5.3"
+//    implementation "org.bytedeco:opencv-platform:4.3.0-1.5.3"
+
+//    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'libs/javacv-stripped/opencv', include: ['*.aar', '*.jar'], exclude: [])
+//    implementation fileTree(dir: 'libs/javacv-stripped/ffmpeg', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'libs/javacv-stripped/javacpp', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'libs/javacv-stripped/javacv', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'libs/javacv-stripped/openblas', include: ['*.aar', '*.jar'], exclude: [])
 }

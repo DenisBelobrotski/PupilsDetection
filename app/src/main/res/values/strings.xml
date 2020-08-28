@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PupilsDetection</string>
+    <string name="choose_video">Choose video</string>
+    <string name="process_video">Process video</string>
+    <string name="processed_image">Processed image</string>
+    <string name="choose_video_tip">Choose video file</string>
+    <string name="file_manager_error">Cannot find any file manager</string>
 </resources>

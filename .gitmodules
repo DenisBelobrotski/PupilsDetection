@@ -1,3 +1,6 @@
 [submodule "opencv-4.4.0-android-sdk"]
 	path = opencv-4.4.0-android-sdk
 	url = https://github.com/DenisBelobrotski/opencv-4.4.0-android-sdk.git
+[submodule "app/libs/javacv-stripped"]
+	path = app/libs/javacv-stripped
+	url = https://github.com/DenisBelobrotski/javacv-stripped.git
