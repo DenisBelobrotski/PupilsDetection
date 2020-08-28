@@ -1,12 +1,11 @@
 package by.swiftdrachen.pupilsdetection
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.bytedeco.javacv.OpenCVFrameGrabber
 import org.opencv.android.Utils
@@ -15,9 +14,7 @@ import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
 import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 
 private const val FACE_IMAGE_PATH = "test_faces/test_face_2.jpg"
 private const val FACE_CASCADE_PATH = "cascades/haarcascade_frontalface_alt2.xml"
@@ -42,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val processingImage = Mat()
-        val faceImageBitmap = loadBitmap(FACE_IMAGE_PATH)
+        val faceImageBitmap = FileSystemUtils.loadBitmapResource(this, FACE_IMAGE_PATH)
         Utils.bitmapToMat(faceImageBitmap, processingImage)
 
         val facesRectMat = MatOfRect()
@@ -92,6 +89,13 @@ class MainActivity : AppCompatActivity() {
         processVideoButton.setOnClickListener {
             val grabber = OpenCVFrameGrabber(videoFileChooser.lastChosenFile.value)
             val framesCount = grabber.frameNumber
+
+            videoFileChooser.lastChosenFile.value?.let {
+                val fileSizeMb: Double = it.length().toDouble() / (1024.0 * 1024.0)
+                Toast.makeText(this, "file size: %.2f".format(fileSizeMb), Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
+
             grabber.stop()
         }
     }
@@ -105,61 +109,11 @@ class MainActivity : AppCompatActivity() {
         loader.init()
     }
 
-    private fun loadBitmap(assetPath: String): Bitmap {
-        val assetInputStream = assets.open(assetPath)
-        var resultBitmap = BitmapFactory.decodeStream(assetInputStream)
-        assetInputStream.close()
-        val bitmapConfig = resultBitmap.config
 
-        if (bitmapConfig != Bitmap.Config.ARGB_8888 && bitmapConfig != Bitmap.Config.RGB_565) {
-            resultBitmap = resultBitmap.copy(Bitmap.Config.ARGB_8888, false)
-        }
-
-        return resultBitmap
-    }
-
-    private fun cacheAssetFile(assetUri: Uri, rewrite: Boolean = false): File? {
-        val assetPath = assetUri.path
-        val assetFileName = assetUri.lastPathSegment
-        var cachedFile: File? = null
-
-        assetPath?.let {
-            assetFileName?.let {
-                val inputStream = assets.open(assetPath)
-
-                cachedFile = cacheFile(inputStream, assetFileName, rewrite)
-
-                inputStream.close()
-            }
-        }
-
-        return cachedFile
-    }
-
-    private fun cacheFile(inputStream: InputStream, outputFileName: String, rewrite: Boolean = false): File {
-        val cachedFile = File(this.cacheDir, outputFileName)
-
-        if (cachedFile.exists() && rewrite) {
-            cachedFile.delete()
-        }
-        cachedFile.createNewFile()
-
-        val outputStream = FileOutputStream(cachedFile)
-
-        inputStream.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
-            }
-        }
-
-        outputStream.close()
-
-        return cachedFile
-    }
 
     private fun loadCascadeFromAssets(assetPath: String): CascadeClassifier? {
         val faceCascadeAssetUri = Uri.parse(assetPath)
-        val cachedFaceCascadeFile = cacheAssetFile(faceCascadeAssetUri)
+        val cachedFaceCascadeFile = FileSystemUtils.cacheAssetFile(this, faceCascadeAssetUri)
         var loadedCascade: CascadeClassifier? = null
         cachedFaceCascadeFile?.let {
             loadedCascade = loadCascade(cachedFaceCascadeFile)

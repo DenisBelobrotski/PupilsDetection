@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
-import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,9 +13,7 @@ private const val VIDEO_FILE_CHOOSER_REQUEST_CODE = 322
 private const val CHOOSER_FILE_FILTER = "video/*"
 
 class VideoFileChooser(private val targetActivity: Activity) {
-
     private val lastChosenFileMutable: MutableLiveData<File> by lazy { MutableLiveData<File>() }
-
     val lastChosenFile: LiveData<File>
         get() = lastChosenFileMutable
 
@@ -39,38 +35,15 @@ class VideoFileChooser(private val targetActivity: Activity) {
 
     fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == VIDEO_FILE_CHOOSER_REQUEST_CODE && resultCode == RESULT_OK) {
-            val filePath = intent?.data?.path
-            filePath?.let {
-                lastChosenFileMutable.value = File(filePath)
-                Toast.makeText(targetActivity, filePath, Toast.LENGTH_LONG).show();
-            }
+            val fileUri = intent?.data
+            fileUri?.let {
+                lastChosenFileMutable.value = FileSystemUtils.cacheUserFile(targetActivity, fileUri, true)
 
-            val uri = intent?.data
-            uri?.let {
-                val fileName = getFileName(uri)
-                fileName?.let {
-                    lastChosenFileMutable.value = File(fileName)
-                    Toast.makeText(targetActivity, fileName, Toast.LENGTH_LONG).show();
+                Toast.makeText(targetActivity, fileUri.toString(), Toast.LENGTH_LONG).show();
+                lastChosenFileMutable.value?.let {
+                    Toast.makeText(targetActivity, it.absolutePath, Toast.LENGTH_LONG).show();
                 }
             }
         }
-    }
-
-    private fun getFileName(uri: Uri): String? {
-        // Obtain a cursor with information regarding this uri
-        val cursor = targetActivity.contentResolver.query(uri, null, null, null, null)
-        cursor?.let {
-            if (cursor.count <= 0) {
-                cursor.close()
-                throw IllegalArgumentException("Can't obtain file name, cursor is empty")
-            }
-            cursor.moveToFirst()
-            val fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-            cursor.close()
-
-            return fileName
-        }
-
-        return null
     }
 }
