@@ -96,7 +96,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processVideo() {
-        val grabber = FFmpegFrameGrabber(videoFileChooser.lastChosenFile.value)
+        val userFileUri = videoFileChooser.lastChosenFileUri.value
+
+        if (userFileUri == null) {
+            Toast.makeText(this, "Video file wasn't chosen.", Toast.LENGTH_LONG).show();
+            return
+        }
+
+        val userFileInputStream = FileSystemUtils.openUserFileInputStream(this, userFileUri)
+        val grabber = FFmpegFrameGrabber(userFileInputStream)
 
         try {
             grabber.start()
@@ -130,10 +138,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Failed to stop grabber.", Toast.LENGTH_LONG).show();
         }
 
-        videoFileChooser.lastChosenFile.value?.let {
-            val fileSizeMb: Double = it.length().toDouble() / (1024.0 * 1024.0)
-            Toast.makeText(this, "file size: %.2f".format(fileSizeMb), Toast.LENGTH_LONG).show();
-        }
+        userFileInputStream?.close()
+
         Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
     }
 

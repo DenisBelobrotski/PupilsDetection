@@ -66,13 +66,19 @@ class FileSystemUtils {
         fun cacheUserFile(context: Context, userFileUri: Uri, rewrite: Boolean = false): File? {
             var cachedFile: File? = null
             val userFileName = getUserFileName(context, userFileUri)
-            val userFileInputStream = context.contentResolver.openInputStream(userFileUri)
+            val userFileInputStream = openUserFileInputStream(context, userFileUri)
 
             if (userFileName != null && userFileInputStream != null) {
                 cachedFile = writeCacheFile(context, userFileInputStream, userFileName, rewrite)
             }
 
+            userFileInputStream?.close()
+
             return cachedFile
+        }
+
+        fun openUserFileInputStream(context: Context, userFileUri: Uri): InputStream? {
+            return context.contentResolver.openInputStream(userFileUri)
         }
 
         fun getUserFileName(context: Context, uri: Uri): String? {
