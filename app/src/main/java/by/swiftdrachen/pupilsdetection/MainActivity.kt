@@ -7,7 +7,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import org.bytedeco.javacv.OpenCVFrameGrabber
+import org.bytedeco.javacv.FFmpegFrameGrabber
+import org.bytedeco.javacv.Frame
+import org.bytedeco.javacv.FrameGrabber
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
@@ -87,29 +89,56 @@ class MainActivity : AppCompatActivity() {
 
         val processVideoButton = findViewById<Button>(R.id.process_video_button)
         processVideoButton.setOnClickListener {
-            val grabber = OpenCVFrameGrabber(videoFileChooser.lastChosenFile.value)
-            val framesCount = grabber.frameNumber
-
-            videoFileChooser.lastChosenFile.value?.let {
-                val fileSizeMb: Double = it.length().toDouble() / (1024.0 * 1024.0)
-                Toast.makeText(this, "file size: %.2f".format(fileSizeMb), Toast.LENGTH_LONG).show();
-            }
-            Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
-
-            grabber.stop()
+            processVideo()
         }
     }
 
     private fun loadOpenCV() {
-        //OpenCV Android SDK
-//        OpenCVLoader.initDebug()
-
-        //JavaCV library
         val loader = OpenCVNativeLoader()
         loader.init()
     }
 
+    private fun processVideo() {
+        val grabber = FFmpegFrameGrabber(videoFileChooser.lastChosenFile.value)
 
+        try {
+            grabber.start()
+        } catch (exception: FrameGrabber.Exception) {
+            Toast.makeText(this, "Failed to start grabber.", Toast.LENGTH_LONG).show();
+        }
+
+        var frame: Frame? = null
+        var framesCount = 0
+
+        do {
+            try {
+                frame = grabber.grabFrame()
+                if (frame != null) {
+                    framesCount += 1
+                }
+            } catch (exception: FrameGrabber.Exception) {
+                Toast.makeText(this, "Failed to grab frame.", Toast.LENGTH_LONG).show();
+            }
+        } while (frame != null)
+
+        Toast.makeText(this,
+            "video format: ${grabber.format}\n" +
+                "pixel format: ${grabber.pixelFormat}\n" +
+                "sample format: ${grabber.sampleFormat}",
+            Toast.LENGTH_LONG).show();
+
+        try {
+            grabber.stop()
+        } catch (exception: FrameGrabber.Exception) {
+            Toast.makeText(this, "Failed to stop grabber.", Toast.LENGTH_LONG).show();
+        }
+
+        videoFileChooser.lastChosenFile.value?.let {
+            val fileSizeMb: Double = it.length().toDouble() / (1024.0 * 1024.0)
+            Toast.makeText(this, "file size: %.2f".format(fileSizeMb), Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
+    }
 
     private fun loadCascadeFromAssets(assetPath: String): CascadeClassifier? {
         val faceCascadeAssetUri = Uri.parse(assetPath)
