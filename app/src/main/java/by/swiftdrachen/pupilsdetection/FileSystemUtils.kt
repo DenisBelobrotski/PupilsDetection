@@ -13,8 +13,26 @@ class FileSystemUtils {
     companion object {
         fun loadBitmapResource(context: Context, assetPath: String): Bitmap {
             val assetInputStream = context.assets.open(assetPath)
-            var resultBitmap = BitmapFactory.decodeStream(assetInputStream)
+            val resultBitmap = decodeBitmap(assetInputStream)
             assetInputStream.close()
+
+            return resultBitmap
+        }
+
+        fun loadUserBitmap(context: Context, uri: Uri): Bitmap? {
+            var resultBitmap: Bitmap? = null
+            val inputStream = context.contentResolver.openInputStream(uri)
+
+            inputStream?.let {
+                resultBitmap = decodeBitmap(inputStream)
+            }
+
+            return resultBitmap
+        }
+
+        fun decodeBitmap(inputStream: InputStream): Bitmap {
+            var resultBitmap = BitmapFactory.decodeStream(inputStream)
+
             val bitmapConfig = resultBitmap.config
 
             if (bitmapConfig != Bitmap.Config.ARGB_8888 && bitmapConfig != Bitmap.Config.RGB_565) {

@@ -10,9 +10,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 private const val VIDEO_FILE_CHOOSER_REQUEST_CODE = 322
-private const val CHOOSER_FILE_FILTER = "video/*"
 
-class VideoFileChooser(private val targetActivity: Activity) {
+class FileChooser(
+    private val targetActivity: Activity,
+    private val baseMimeType: String,
+    private val concreteMimeType: String) {
+
     private val lastChosenFileUriMutable: MutableLiveData<Uri> by lazy { MutableLiveData<Uri>() }
     val lastChosenFileUri: LiveData<Uri>
         get() = lastChosenFileUriMutable
@@ -21,7 +24,7 @@ class VideoFileChooser(private val targetActivity: Activity) {
         val chooserTip = targetActivity.resources.getString(R.string.choose_video_tip)
 
         var chooserIntent = Intent(Intent.ACTION_GET_CONTENT)
-        chooserIntent.type = CHOOSER_FILE_FILTER
+        chooserIntent.type = "${baseMimeType}/${concreteMimeType}"
         chooserIntent.addCategory(Intent.CATEGORY_OPENABLE)
         chooserIntent = Intent.createChooser(chooserIntent, chooserTip)
 

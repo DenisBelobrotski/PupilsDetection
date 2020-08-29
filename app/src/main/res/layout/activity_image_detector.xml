@@ -4,36 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ImageDetectorActivity">
 
-    <Button
-        android:id="@+id/image_detector_button"
+    <ImageView
+        android:id="@+id/image_detector_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/image_detector"
-        app:layout_constraintBottom_toTopOf="@id/video_detector_button"
+        android:contentDescription="@string/processed_image"
+        app:layout_constraintBottom_toTopOf="@id/choose_image_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/video_detector_button"
+        android:id="@+id/choose_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/video_detector"
-        app:layout_constraintBottom_toTopOf="@id/camera_detector_button"
+        android:text="@string/choose_image"
+        app:layout_constraintBottom_toTopOf="@id/process_image_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_detector_button" />
+        app:layout_constraintTop_toBottomOf="@id/image_detector_image_view" />
 
     <Button
-        android:id="@+id/camera_detector_button"
+        android:id="@+id/process_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/camera_detector"
+        android:text="@string/process_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/video_detector_button" />
+        app:layout_constraintTop_toBottomOf="@id/choose_image_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

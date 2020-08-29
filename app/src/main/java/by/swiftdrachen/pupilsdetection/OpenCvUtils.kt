@@ -3,11 +3,17 @@ package by.swiftdrachen.pupilsdetection
 import android.content.Context
 import android.net.Uri
 import org.opencv.objdetect.CascadeClassifier
+import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
 import java.io.IOException
 
 class OpenCvUtils {
     companion object {
+        fun loadLibraries() {
+            val loader = OpenCVNativeLoader()
+            loader.init()
+        }
+
         fun loadCascadeFromAssets(context: Context, assetPath: String): CascadeClassifier? {
             val faceCascadeAssetUri = Uri.parse(assetPath)
             val cachedFaceCascadeFile = FileSystemUtils.cacheAssetFile(context, faceCascadeAssetUri)
