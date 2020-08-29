@@ -1,7 +1,6 @@
 package by.swiftdrachen.pupilsdetection
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -13,9 +12,7 @@ import org.bytedeco.javacv.FrameGrabber
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
-import org.opencv.objdetect.CascadeClassifier
 import org.opencv.osgi.OpenCVNativeLoader
-import java.io.File
 import java.io.IOException
 
 private const val FACE_IMAGE_PATH = "test_faces/test_face_2.jpg"
@@ -33,8 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         loadOpenCV()
 
-        val faceCascadeClassifier = loadCascadeFromAssets(FACE_CASCADE_PATH)
-        val eyeCascadeClassifier = loadCascadeFromAssets(EYE_CASCADE_PATH)
+        val faceCascadeClassifier = OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
+        val eyeCascadeClassifier = OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
 
         if (faceCascadeClassifier == null || eyeCascadeClassifier == null) {
             throw IOException("Bad cascade classifiers")
@@ -138,28 +135,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "file size: %.2f".format(fileSizeMb), Toast.LENGTH_LONG).show();
         }
         Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
-    }
-
-    private fun loadCascadeFromAssets(assetPath: String): CascadeClassifier? {
-        val faceCascadeAssetUri = Uri.parse(assetPath)
-        val cachedFaceCascadeFile = FileSystemUtils.cacheAssetFile(this, faceCascadeAssetUri)
-        var loadedCascade: CascadeClassifier? = null
-        cachedFaceCascadeFile?.let {
-            loadedCascade = loadCascade(cachedFaceCascadeFile)
-        }
-
-        return loadedCascade
-    }
-
-    private fun loadCascade(cascadeFile: File): CascadeClassifier {
-        val faceCascadeClassifier = CascadeClassifier(cascadeFile.absolutePath)
-        val isEmpty = faceCascadeClassifier.empty()
-
-        if (isEmpty) {
-            throw IOException("Cascade classifier is empty")
-        }
-
-        return faceCascadeClassifier
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
