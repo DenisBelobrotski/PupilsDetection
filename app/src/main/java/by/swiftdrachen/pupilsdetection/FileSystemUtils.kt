@@ -42,8 +42,10 @@ class FileSystemUtils {
             return resultBitmap
         }
 
-        fun writeCacheFile(context: Context, inputStream: InputStream, outputFileName: String, rewrite: Boolean = false): File {
-            val cachedFile = File(context.cacheDir, outputFileName)
+        fun writeCacheFile(context: Context, inputStream: InputStream, outputFileName: String,
+                rewrite: Boolean = false, public: Boolean = false): File {
+            val cacheDir: File? = if (public) context.externalCacheDir else context.cacheDir
+            val cachedFile = File(cacheDir, outputFileName)
 
             if (cachedFile.exists() && rewrite) {
                 cachedFile.delete()
@@ -63,7 +65,8 @@ class FileSystemUtils {
             return cachedFile
         }
 
-        fun cacheAssetFile(context: Context, assetUri: Uri, rewrite: Boolean = false): File? {
+        fun cacheAssetFile(context: Context, assetUri: Uri,
+                rewrite: Boolean = false, public: Boolean = false): File? {
             val assetPath = assetUri.path
             val assetFileName = assetUri.lastPathSegment
             var cachedFile: File? = null
@@ -72,7 +75,7 @@ class FileSystemUtils {
                 assetFileName?.let {
                     val inputStream = context.assets.open(assetPath)
 
-                    cachedFile = writeCacheFile(context, inputStream, assetFileName, rewrite)
+                    cachedFile = writeCacheFile(context, inputStream, assetFileName, rewrite, public)
 
                     inputStream.close()
                 }

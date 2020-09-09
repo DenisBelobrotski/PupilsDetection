@@ -36,18 +36,18 @@ class ImageDetectorActivity : DetectorActivity() {
         val imageUri = imageFileChooser.lastChosenFileUri.value
 
         if (imageUri == null) {
-            Toast.makeText(this, "Bad image uri.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Bad image uri.", Toast.LENGTH_LONG).show()
             return
         }
 
         val chosenBitmap = FileSystemUtils.loadUserBitmap(this, imageUri)
 
         if (chosenBitmap == null) {
-            Toast.makeText(this, "Bad loaded bitmap.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Bad loaded bitmap.", Toast.LENGTH_LONG).show()
             return
         }
 
-        faceDetector.processBitmap(chosenBitmap)
+        faceDetector.detectAndMarkFaces(chosenBitmap)
 
         imageView.setImageBitmap(chosenBitmap)
     }

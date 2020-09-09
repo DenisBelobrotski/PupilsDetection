@@ -7,6 +7,8 @@ import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
 import java.io.IOException
 
+const val ShouldShowCachedCascadesForUser = true
+
 class OpenCvUtils {
     companion object {
         fun loadLibraries() {
@@ -16,7 +18,8 @@ class OpenCvUtils {
 
         fun loadCascadeFromAssets(context: Context, assetPath: String): CascadeClassifier? {
             val faceCascadeAssetUri = Uri.parse(assetPath)
-            val cachedFaceCascadeFile = FileSystemUtils.cacheAssetFile(context, faceCascadeAssetUri)
+            val cachedFaceCascadeFile = FileSystemUtils.cacheAssetFile(context, faceCascadeAssetUri,
+                    false, ShouldShowCachedCascadesForUser)
             var loadedCascade: CascadeClassifier? = null
             cachedFaceCascadeFile?.let {
                 loadedCascade = loadCascade(cachedFaceCascadeFile)

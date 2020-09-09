@@ -10,43 +10,61 @@ class FaceDetector(
     private val faceCascadeClassifier: CascadeClassifier,
     private val eyeCascadeClassifier: CascadeClassifier) {
 
-    fun processBitmap(sourceBitmap: Bitmap) {
-        val processingImage = Mat()
-        Utils.bitmapToMat(sourceBitmap, processingImage)
+    fun detectAndMarkFaces(sourceBitmap: Bitmap) {
+        val sourceMat = Mat()
+        Utils.bitmapToMat(sourceBitmap, sourceMat)
+        detectAndMarkFaces(sourceMat)
+        Utils.matToBitmap(sourceMat, sourceBitmap)
+    }
 
-        val facesRectMat = MatOfRect()
-        faceCascadeClassifier.detectMultiScale(processingImage, facesRectMat)
-        val faceRects = facesRectMat.toList()
-
+    // TODO: Optimize memory allocation.
+    //  Move MatOfRect() to class fields.
+    //  See "MatOfRect.size().height.toInt()" and "MatOfRect.toArray()" implementation.
+    //  Use "for (i in 0 until facesCount)".
+    fun detectAndMarkFaces(sourceMat: Mat) {
+        val faceRects = detectFaces(sourceMat)
         faceRects.forEach { faceRect ->
-            val faceHalfSize = Size(
-                faceRect.width.toDouble() * 0.5,
-                faceRect.height.toDouble() * 0.5)
-            val faceCenter = Point(
-                faceRect.x.toDouble() + faceHalfSize.width,
-                faceRect.y.toDouble() + faceHalfSize.height)
-            val faceColor = Scalar(1.0, 1.0, 1.0, 1.0)
+            markRect(sourceMat, faceRect, Point())
 
-            Imgproc.circle(processingImage, faceCenter, faceRect.width / 2, faceColor, 10, 8, 0);
-
-            val faceROI = processingImage.submat(faceRect)
-            val eyesRectMat = MatOfRect()
-            eyeCascadeClassifier.detectMultiScale(faceROI, eyesRectMat)
-            val eyeRects = eyesRectMat.toList()
-
+            val faceROI = sourceMat.submat(faceRect)
+            val eyeRects = detectEyes(faceROI)
             eyeRects.forEach { eyeRect ->
-                val eyeHalfSize = Size(
-                    eyeRect.width.toDouble() * 0.5,
-                    eyeRect.height.toDouble() * 0.5)
-                val eyeCenter = Point(
-                    faceRect.x.toDouble() + eyeRect.x.toDouble() + eyeHalfSize.width,
-                    faceRect.y.toDouble() + eyeRect.y.toDouble() + eyeHalfSize.height)
-                val eyeColor = Scalar(1.0, 1.0, 1.0, 1.0)
-
-                Imgproc.circle(processingImage, eyeCenter, eyeRect.width / 2, eyeColor, 5, 8, 0);
+                markRect(sourceMat, eyeRect, faceRect.tl())
             }
         }
+    }
 
-        Utils.matToBitmap(processingImage, sourceBitmap)
+    fun detectFaces(sourceMat: Mat): Array<Rect> {
+        val facesRectMat = MatOfRect()
+        faceCascadeClassifier.detectMultiScale(sourceMat, facesRectMat)
+        return facesRectMat.toArray()
+    }
+
+    fun detectEyes(sourceMat: Mat): Array<Rect> {
+        val eyesRectMat = MatOfRect()
+        eyeCascadeClassifier.detectMultiScale(sourceMat, eyesRectMat)
+        return eyesRectMat.toArray()
+    }
+
+    fun detectFaces(sourceBitmap: Bitmap): Array<Rect> {
+        val sourceMat = Mat()
+        val facesRectMat = MatOfRect()
+
+        Utils.bitmapToMat(sourceBitmap, sourceMat)
+        faceCascadeClassifier.detectMultiScale(sourceMat, facesRectMat)
+
+        return facesRectMat.toArray()
+    }
+
+    fun markRect(mat: Mat, rect: Rect, offset: Point) {
+        val faceHalfSize = Size(
+                rect.width.toDouble() * 0.5,
+                rect.height.toDouble() * 0.5)
+        val faceCenter = Point(
+                offset.x + rect.x.toDouble() + faceHalfSize.width,
+                offset.y + rect.y.toDouble() + faceHalfSize.height)
+        val faceColor = Scalar(1.0, 1.0, 1.0, 1.0)
+
+        Imgproc.circle(mat, faceCenter, rect.width / 2, faceColor, 10, 8, 0)
     }
 }

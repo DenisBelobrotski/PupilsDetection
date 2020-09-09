@@ -5,15 +5,20 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import org.bytedeco.javacv.FFmpegFrameGrabber
-import org.bytedeco.javacv.Frame
-import org.bytedeco.javacv.FrameGrabber
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
+private const val ProcessedVideosFolderName = "processed_videos"
+private const val FileNameCommonPart = "processed_video_file"
+private const val FileNameDateFormat = "yyyy-MM-dd_HH:mm:ss:SSS"
 
 class VideoDetectorActivity : DetectorActivity() {
     private val videoFileChooser by lazy { FileChooser(this, "video", "*") }
     private val videoView by lazy { findViewById<ImageView>(R.id.video_detector_image_view) }
     private val chooseVideoButton by lazy { findViewById<Button>(R.id.choose_video_button) }
     private val processVideoButton by lazy { findViewById<Button>(R.id.process_video_button) }
+    private val fileNameDateFormatter by lazy { SimpleDateFormat(FileNameDateFormat) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,47 +44,50 @@ class VideoDetectorActivity : DetectorActivity() {
         val userFileUri = videoFileChooser.lastChosenFileUri.value
 
         if (userFileUri == null) {
-            Toast.makeText(this, "Video file wasn't chosen.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Video file wasn't chosen.", Toast.LENGTH_LONG).show()
             return
         }
 
         val userFileInputStream = FileSystemUtils.openUserFileInputStream(this, userFileUri)
-        val grabber = FFmpegFrameGrabber(userFileInputStream)
 
-        try {
-            grabber.start()
-        } catch (exception: FrameGrabber.Exception) {
-            Toast.makeText(this, "Failed to start grabber.", Toast.LENGTH_LONG).show();
-        }
+        val inputFileName = FileSystemUtils.getUserFileName(this, userFileUri) ?: userFileUri.toString()
+        val fileExtension = inputFileName.substring(inputFileName.lastIndexOf(".") + 1);
 
-        var frame: Frame? = null
-        var framesCount = 0
+        val outputFile = createVideoFile(fileExtension)
 
-        do {
-            try {
-                frame = grabber.grabFrame()
-                if (frame != null) {
-                    framesCount += 1
-                }
-            } catch (exception: FrameGrabber.Exception) {
-                Toast.makeText(this, "Failed to grab frame.", Toast.LENGTH_LONG).show();
+        userFileInputStream?.use {
+            val videoFaceDetector = VideoFaceDetector(userFileInputStream, outputFile, faceDetector, false)
+            videoFaceDetector.use {
+                videoFaceDetector.detectFaces()
             }
-        } while (frame != null)
-
-        Toast.makeText(this,
-            "video format: ${grabber.format}\n" +
-                    "pixel format: ${grabber.pixelFormat}\n" +
-                    "sample format: ${grabber.sampleFormat}",
-            Toast.LENGTH_LONG).show();
-
-        try {
-            grabber.stop()
-        } catch (exception: FrameGrabber.Exception) {
-            Toast.makeText(this, "Failed to stop grabber.", Toast.LENGTH_LONG).show();
         }
 
-        userFileInputStream?.close()
+        Toast.makeText(this, "Processed file saved as\n" +
+                "\"${outputFile.absolutePath}\"", Toast.LENGTH_LONG).show()
+    }
 
-        Toast.makeText(this, "frames count: $framesCount", Toast.LENGTH_LONG).show();
+    private fun createVideoFile(fileExtension: String): File {
+        val fileName = generateVideoFileName(fileExtension)
+        val filesDirectory = getExternalFilesDir(null)
+
+        val videoFilesDirectory = File(filesDirectory, ProcessedVideosFolderName)
+        if (!videoFilesDirectory.exists()) {
+            videoFilesDirectory.mkdir()
+        }
+
+        val file = File(videoFilesDirectory, fileName)
+
+        if (file.exists()) {
+            file.delete()
+        }
+        file.createNewFile()
+
+        return file
+    }
+
+    private fun generateVideoFileName(fileExtension: String): String {
+        val currentTime = Calendar.getInstance().time
+        val formattedDate = fileNameDateFormatter.format(currentTime)
+        return "${FileNameCommonPart}_${formattedDate}.${fileExtension}"
     }
 }

@@ -32,7 +32,7 @@ class FileChooser(
             targetActivity.startActivityForResult(chooserIntent, VIDEO_FILE_CHOOSER_REQUEST_CODE)
         } catch (exception: ActivityNotFoundException) {
             val message = targetActivity.resources.getString(R.string.file_manager_error)
-            Toast.makeText(targetActivity, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(targetActivity, message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -41,7 +41,7 @@ class FileChooser(
             val fileUri = intent?.data
             fileUri?.let {
                 lastChosenFileUriMutable.value = fileUri
-                Toast.makeText(targetActivity, fileUri.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(targetActivity, fileUri.toString(), Toast.LENGTH_LONG).show()
             }
         }
     }

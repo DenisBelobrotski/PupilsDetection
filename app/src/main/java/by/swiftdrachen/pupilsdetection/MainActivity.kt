@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         cameraDetectorButton.setOnClickListener {
-            Toast.makeText(this, "Camera detector is not implemented yet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Camera detector is not implemented yet.", Toast.LENGTH_LONG).show()
         }
     }
 }
