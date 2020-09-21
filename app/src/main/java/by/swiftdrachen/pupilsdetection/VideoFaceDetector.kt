@@ -15,7 +15,7 @@ import java.util.*
 class VideoFaceDetector(
         private val videoInputStream: InputStream,
         private val videoOutputFile: File,
-        private val faceDetector: FaceDetector,
+        private val faceDetector: FaceAndEyesDetector,
         private val isFlipped: Boolean = false) : Closeable {
 
     private val grabber = FFmpegFrameGrabber(videoInputStream)

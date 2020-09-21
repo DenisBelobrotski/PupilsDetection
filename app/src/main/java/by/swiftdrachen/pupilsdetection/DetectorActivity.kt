@@ -12,6 +12,6 @@ open class DetectorActivity : AppCompatActivity() {
             throw IOException("Bad cascade classifiers")
         }
 
-        FaceDetector(faceCascadeClassifier, eyeCascadeClassifier)
+        FaceAndEyesDetector(faceCascadeClassifier, eyeCascadeClassifier)
     }
 }

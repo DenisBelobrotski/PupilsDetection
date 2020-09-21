@@ -6,7 +6,7 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
 
-class FaceDetector(
+class FaceAndEyesDetector(
     private val faceCascadeClassifier: CascadeClassifier,
     private val eyeCascadeClassifier: CascadeClassifier) {
 
