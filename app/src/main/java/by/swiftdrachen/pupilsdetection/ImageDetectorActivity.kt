@@ -48,6 +48,9 @@ class ImageDetectorActivity : DetectorActivity() {
 
         sessionFileManager.saveMat(chosenMat, "source_image")
 
+        //TODO: to gray and histogram equalization
+//        val preparedMat = prepareMat(chosenMat)
+
         val faceCascade = OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
         faceCascade?.let {
             val faceDetector = FaceDetector(faceCascade)

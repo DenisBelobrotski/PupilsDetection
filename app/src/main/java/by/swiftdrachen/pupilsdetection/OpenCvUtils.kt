@@ -52,5 +52,9 @@ class OpenCvUtils {
 
             return resultMat
         }
+
+        fun emptyClone(sourceMat: Mat): Mat {
+            return Mat(sourceMat.rows(), sourceMat.cols(), sourceMat.type())
+        }
     }
 }

@@ -3,6 +3,7 @@ package by.swiftdrachen.pupilsdetection
 import org.opencv.core.Mat
 import org.opencv.core.MatOfRect
 import org.opencv.core.Rect
+import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
 
 class FaceDetector(private val cascadeClassifier: CascadeClassifier) {
@@ -25,6 +26,13 @@ class FaceDetector(private val cascadeClassifier: CascadeClassifier) {
         val maxSize = sourceMat.size()
         maxSize.width *= MaxSizeRatio
         maxSize.height *= MaxSizeRatio
+
+        //TODO: move this out to optimize
+        val grayscale = OpenCvUtils.emptyClone(sourceMat)
+        Imgproc.cvtColor(sourceMat, grayscale, Imgproc.COLOR_BGRA2GRAY)
+
+        //TODO: move this out to optimize
+        Imgproc.equalizeHist(grayscale, grayscale)
 
         cascadeClassifier.detectMultiScale(
                 sourceMat, facesRectMat, ScaleFactor, MinNeighbours, Flags, minSize, maxSize)
