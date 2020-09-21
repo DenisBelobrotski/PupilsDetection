@@ -46,8 +46,16 @@ class ImageDetectorActivity : DetectorActivity() {
             return
         }
 
-        faceDetector.detectAndMarkFaces(chosenMat)
+        sessionFileManager.saveMat(chosenMat, "source_image")
 
-        sessionFileManager.saveMat(chosenMat, "detected_mat")
+        val faceCascade = OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
+        faceCascade?.let {
+            val faceDetector = FaceDetector(faceCascade)
+            val faces = faceDetector.getFaceMats(chosenMat)
+            for (index in faces.indices) {
+                val face = faces[index]
+                sessionFileManager.saveMat(face, "detected_face_$index")
+            }
+        }
     }
 }
