@@ -10,6 +10,7 @@ import org.opencv.imgproc.Imgproc
 import java.io.Closeable
 import java.io.File
 import java.io.InputStream
+import java.util.*
 
 class VideoFaceDetector(
         private val videoInputStream: InputStream,
@@ -18,9 +19,7 @@ class VideoFaceDetector(
         private val isFlipped: Boolean = false) : Closeable {
 
     private val grabber = FFmpegFrameGrabber(videoInputStream)
-    private val recorder: FFmpegFrameRecorder;
-
-    private var badFramesCount = 0
+    private val recorder: FFmpegFrameRecorder
 
     private val javaCvMatToOpenCvMatConverter = OpenCVFrameConverter.ToOrgOpenCvCoreMat()
 
@@ -58,29 +57,39 @@ class VideoFaceDetector(
     }
 
     fun detectFaces() {
-        for (frameIndex in 0 until grabber.lengthInFrames) {
-            Log.d("FACE_DETECT", "Start processing frame at index $frameIndex")
+        var framesCount = 0
+        var emptyFramesCount = 0
+        var frame: Frame? = grabber.grab()
+        var frameMat: org.opencv.core.Mat? = null
 
-            val frameMat = getFrameMatAtIndex(frameIndex)
+        val startTime = Calendar.getInstance().time
 
-            if (frameMat == null) {
-                badFramesCount += 1
-                Log.d("VIDEO_RECORDING", "frame at index $frameIndex skipped!")
-                continue
+        while (frame != null) {
+            Log.d("FACE_DETECT", "Start processing frame at index $framesCount")
+
+            frameMat = frameToMat(frame)
+
+            if (frameMat != null) {
+                faceDetector.detectAndMarkFaces(frameMat)
+                frame = matToFrame(frameMat)
+            } else {
+                emptyFramesCount += 1
             }
 
-            //TODO: flip frame correctly
-//            if (isFlipped && flippedMatDestination != null && rotationMat != null) {
-//                Imgproc.warpAffine(frameMat, flippedMatDestination, rotationMat, frameMat.size())
-//                frameMat = flippedMatDestination
-//            }
+            recorder.record(frame)
 
-            faceDetector.detectAndMarkFaces(frameMat)
-
-            recordMat(frameMat)
+            frame = grabber.grab()
+            framesCount++
         }
 
-        Log.d("FACE_DETECT", "bad frames count: $badFramesCount")
+        val deltaTime = Calendar.getInstance().time.time - startTime.time
+        val processingDuration = TimeSpan(deltaTime)
+
+        Log.d("FACE_DETECT", "Processing duration: $processingDuration")
+        Log.d("FACE_DETECT", "Video frames count: ${grabber.lengthInVideoFrames}")
+        Log.d("FACE_DETECT", "Audio frames count: ${grabber.lengthInAudioFrames}")
+        Log.d("FACE_DETECT", "Processed frames count: $framesCount")
+        Log.d("FACE_DETECT", "Empty frames count: $emptyFramesCount")
     }
 
     private fun frameToMat(frame: Frame?): org.opencv.core.Mat? {
@@ -119,11 +128,6 @@ class VideoFaceDetector(
         }
 
         return frameMat
-    }
-
-    private fun recordMat(mat: org.opencv.core.Mat) {
-        val frame = matToFrame(mat)
-        recorder.record(frame)
     }
 
     private fun createFlippedMatDestination(): org.opencv.core.Mat? {
