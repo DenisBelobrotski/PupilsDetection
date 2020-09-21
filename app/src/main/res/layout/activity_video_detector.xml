@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".VideoDetectorActivity">
 
-    <ImageView
-        android:id="@+id/video_detector_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/processed_video"
-        app:layout_constraintBottom_toTopOf="@id/choose_video_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/choose_video_button"
         android:layout_width="wrap_content"
@@ -24,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="@id/process_video_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/video_detector_image_view" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/process_video_button"

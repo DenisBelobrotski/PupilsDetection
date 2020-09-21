@@ -3,14 +3,13 @@ package by.swiftdrachen.pupilsdetection
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 
 class ImageDetectorActivity : DetectorActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
-    private val imageView by lazy { findViewById<ImageView>(R.id.image_detector_image_view) }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
+    private val sessionFileManager by lazy { SessionFileManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,15 +39,15 @@ class ImageDetectorActivity : DetectorActivity() {
             return
         }
 
-        val chosenBitmap = FileSystemUtils.loadUserBitmap(this, imageUri)
+        val chosenMat = OpenCvUtils.loadUserMat(this, imageUri)
 
-        if (chosenBitmap == null) {
-            Toast.makeText(this, "Bad loaded bitmap.", Toast.LENGTH_LONG).show()
+        if (chosenMat == null) {
+            Toast.makeText(this, "Bad loaded mat.", Toast.LENGTH_LONG).show()
             return
         }
 
-        faceDetector.detectAndMarkFaces(chosenBitmap)
+        faceDetector.detectAndMarkFaces(chosenMat)
 
-        imageView.setImageBitmap(chosenBitmap)
+        sessionFileManager.saveMat(chosenMat, "detected_mat")
     }
 }

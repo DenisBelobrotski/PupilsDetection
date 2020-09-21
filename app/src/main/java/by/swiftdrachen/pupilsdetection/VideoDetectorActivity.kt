@@ -3,7 +3,6 @@ package by.swiftdrachen.pupilsdetection
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import java.io.File
 import java.text.SimpleDateFormat
@@ -15,7 +14,6 @@ private const val FileNameDateFormat = "yyyy-MM-dd_HH:mm:ss:SSS"
 
 class VideoDetectorActivity : DetectorActivity() {
     private val videoFileChooser by lazy { FileChooser(this, "video", "*") }
-    private val videoView by lazy { findViewById<ImageView>(R.id.video_detector_image_view) }
     private val chooseVideoButton by lazy { findViewById<Button>(R.id.choose_video_button) }
     private val processVideoButton by lazy { findViewById<Button>(R.id.process_video_button) }
     private val fileNameDateFormatter by lazy { SimpleDateFormat(FileNameDateFormat) }

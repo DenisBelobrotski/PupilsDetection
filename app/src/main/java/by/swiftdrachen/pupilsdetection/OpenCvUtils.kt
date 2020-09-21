@@ -2,6 +2,8 @@ package by.swiftdrachen.pupilsdetection
 
 import android.content.Context
 import android.net.Uri
+import org.opencv.android.Utils
+import org.opencv.core.Mat
 import org.opencv.objdetect.CascadeClassifier
 import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
@@ -37,6 +39,18 @@ class OpenCvUtils {
             }
 
             return faceCascadeClassifier
+        }
+
+        fun loadUserMat(context: Context, uri: Uri): Mat? {
+            var resultMat: Mat? = null
+
+            val resultBitmap = FileSystemUtils.loadUserBitmap(context, uri)
+            resultBitmap?.let {
+                resultMat = Mat()
+                Utils.bitmapToMat(resultBitmap, resultMat)
+            }
+
+            return resultMat
         }
     }
 }
