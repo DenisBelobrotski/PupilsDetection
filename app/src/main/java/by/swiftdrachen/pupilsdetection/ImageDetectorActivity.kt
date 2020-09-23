@@ -2,10 +2,12 @@ package by.swiftdrachen.pupilsdetection
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.CascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.ContourPupilDetector
 import by.swiftdrachen.pupilsdetection.tracking.configs.EyeCascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.tracking.configs.FaceCascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
@@ -70,6 +72,7 @@ class ImageDetectorActivity : AppCompatActivity() {
 
         val faceDetector = CascadeClassifierDetector(faceCascade, faceCascadeConfig)
         val eyeDetector = CascadeClassifierDetector(eyeCascade, eyeCascadeConfig)
+        val pupilDetector = ContourPupilDetector()
 
         val faces = faceDetector.getFaceMats(chosenMat)
         for (faceIndex in faces.indices) {
@@ -80,6 +83,14 @@ class ImageDetectorActivity : AppCompatActivity() {
             for (eyeIndex in eyes.indices) {
                 val eye = eyes[eyeIndex]
                 sessionFileManager.saveMat(eye, "detected_eye_${faceIndex}_${eyeIndex}")
+
+                pupilDetector.targetImage = eye
+                pupilDetector.detect()
+                val pupils = pupilDetector.DetectedImages
+                for (pupilIndex in pupils.indices) {
+                    val pupil = pupils[pupilIndex]
+                    sessionFileManager.saveMat(pupil, "detected_pupil_${faceIndex}_${eyeIndex}_${pupilIndex}")
+                }
             }
         }
     }
