@@ -1,6 +1,7 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.obsolete
 
 import android.util.Log
+import by.swiftdrachen.pupilsdetection.utils.TimeSpan
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.FFmpegFrameRecorder
 import org.bytedeco.javacv.Frame

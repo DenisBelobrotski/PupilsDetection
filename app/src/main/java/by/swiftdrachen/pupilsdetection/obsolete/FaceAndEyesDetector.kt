@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.obsolete
 
 import android.graphics.Bitmap
 import org.opencv.android.Utils

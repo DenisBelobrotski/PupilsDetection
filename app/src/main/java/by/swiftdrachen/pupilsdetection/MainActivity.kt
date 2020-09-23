@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import by.swiftdrachen.pupilsdetection.obsolete.VideoDetectorActivity
+import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
 
 class MainActivity : AppCompatActivity() {
     private val imageDetectorButton by lazy { findViewById<Button>(R.id.image_detector_button) }

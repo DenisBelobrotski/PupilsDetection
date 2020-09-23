@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.utils
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
@@ -8,6 +8,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import by.swiftdrachen.pupilsdetection.R
 
 private const val VIDEO_FILE_CHOOSER_REQUEST_CODE = 322
 

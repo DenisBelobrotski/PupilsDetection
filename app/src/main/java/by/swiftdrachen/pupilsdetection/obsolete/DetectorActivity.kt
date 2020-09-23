@@ -1,6 +1,9 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.obsolete
 
 import androidx.appcompat.app.AppCompatActivity
+import by.swiftdrachen.pupilsdetection.EYE_CASCADE_PATH
+import by.swiftdrachen.pupilsdetection.FACE_CASCADE_PATH
+import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
 import java.io.IOException
 
 open class DetectorActivity : AppCompatActivity() {

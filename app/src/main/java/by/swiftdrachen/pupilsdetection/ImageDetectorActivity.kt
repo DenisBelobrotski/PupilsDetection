@@ -4,8 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import by.swiftdrachen.pupilsdetection.tracking.CascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.configs.EyeCascadeClassifierConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.FaceCascadeClassifierConfig
+import by.swiftdrachen.pupilsdetection.utils.FileChooser
+import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
+import by.swiftdrachen.pupilsdetection.utils.SessionFileManager
 
-class ImageDetectorActivity : DetectorActivity() {
+class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
@@ -52,12 +59,27 @@ class ImageDetectorActivity : DetectorActivity() {
 //        val preparedMat = prepareMat(chosenMat)
 
         val faceCascade = OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
-        faceCascade?.let {
-            val faceDetector = FaceDetector(faceCascade)
-            val faces = faceDetector.getFaceMats(chosenMat)
-            for (index in faces.indices) {
-                val face = faces[index]
-                sessionFileManager.saveMat(face, "detected_face_$index")
+        val faceCascadeConfig = FaceCascadeClassifierConfig()
+
+        val eyeCascade = OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
+        val eyeCascadeConfig = EyeCascadeClassifierConfig()
+
+        if (faceCascade == null || eyeCascade == null) {
+            throw Exception("Cascades not loaded.")
+        }
+
+        val faceDetector = CascadeClassifierDetector(faceCascade, faceCascadeConfig)
+        val eyeDetector = CascadeClassifierDetector(eyeCascade, eyeCascadeConfig)
+
+        val faces = faceDetector.getFaceMats(chosenMat)
+        for (faceIndex in faces.indices) {
+            val face = faces[faceIndex]
+            sessionFileManager.saveMat(face, "detected_face_$faceIndex")
+
+            val eyes = eyeDetector.getFaceMats(face)
+            for (eyeIndex in eyes.indices) {
+                val eye = eyes[eyeIndex]
+                sessionFileManager.saveMat(eye, "detected_eye_${faceIndex}_${eyeIndex}")
             }
         }
     }

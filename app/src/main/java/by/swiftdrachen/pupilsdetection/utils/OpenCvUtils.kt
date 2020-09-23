@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.utils
 
 import android.content.Context
 import android.net.Uri

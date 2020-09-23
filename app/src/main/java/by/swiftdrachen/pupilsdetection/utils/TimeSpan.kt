@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection
+package by.swiftdrachen.pupilsdetection.utils
 
 class TimeSpan(private val totalMillis: Long) {
     private val millis: Long
