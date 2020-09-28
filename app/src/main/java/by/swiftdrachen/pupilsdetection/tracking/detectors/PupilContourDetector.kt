@@ -1,31 +1,31 @@
-package by.swiftdrachen.pupilsdetection.tracking
+package by.swiftdrachen.pupilsdetection.tracking.detectors
 
 import android.util.Log
+import by.swiftdrachen.pupilsdetection.tracking.configs.PupilContourDetectorConfig
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.DetectorNotPreparedException
 import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.Rect
-import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import kotlin.math.PI
 import kotlin.math.abs
 
-class ContourPupilDetector {
-    private var detectedRects: MutableList<Rect> = mutableListOf()
+class PupilContourDetector(private val config: PupilContourDetectorConfig) : FacePartDetector {
+    private var mutableDetectedRects: MutableList<Rect> = mutableListOf()
 
-    private var detectedImages: MutableList<Mat> = mutableListOf()
+    private var mutableDetectedImages: MutableList<Mat> = mutableListOf()
 
-    var targetImage: Mat? = null
+    override var targetImage: Mat? = null
 
-    val DetectedRects: List<Rect>
-        get() = detectedRects
+    override val detectedRects: List<Rect>
+        get() = mutableDetectedRects
 
-    val DetectedImages: List<Mat>
-        get() = detectedImages
+    override val detectedImages: List<Mat>
+        get() = mutableDetectedImages
 
 
-    fun detect() {
+    override fun detect() {
         if (targetImage == null) {
             throw DetectorNotPreparedException("target image is null")
         }
@@ -38,20 +38,23 @@ class ContourPupilDetector {
         Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_BGRA2GRAY)
         Imgproc.equalizeHist(processingImage, processingImage)
 
-        var threshold = 0
-        val maxThreshold = 255
+        val thresholdStartValue = config.thresholdStartValue
+        val thresholdStep = config.thresholdStep
+        val maxThreshold = config.maxThreshold
+        val drawingContourIndex = config.drawingContourIndex
+        val contourColor = config.contourColor
+        val minSizeRate = config.minSizeRate
+        val maxSizeRate = config.maxSizeRate
+        val maxAspectRate = config.maxAspectRate
+        val maxAreaRate = config.maxAreaRate
+
+        var threshold = thresholdStartValue
         val candidate = Mat()
         val contours = mutableListOf<MatOfPoint>()
         val contoursHierarchy = Mat()
-        val drawingContourIndex = -1 //all contours
-        val contourColor = Scalar(255.0, 255.0, 255.0)
-        val minSizeRate = 0.2 //0.25
-        val maxSizeRate = 0.75 //0.41
-        val maxAspectRate = 0.25 //0.2
-        val maxAreaRate = 0.2
         val logTag = "CONTOURS"
 
-        while (threshold < maxThreshold + 1) {
+        while (threshold <= maxThreshold) {
             Imgproc.threshold(
                     processingImage, candidate,
                     threshold.toDouble(), maxThreshold.toDouble(),
@@ -78,8 +81,8 @@ class ContourPupilDetector {
                 val isCorrectAreaRate = areaRate <= maxAreaRate
 
                 if (isSizeRateInRange && isCorrectAspectRate && isCorrectAreaRate) {
-                    detectedRects.add(contourRect)
-                    detectedImages.add(sourceImage.submat(contourRect))
+                    mutableDetectedRects.add(contourRect)
+                    mutableDetectedImages.add(sourceImage.submat(contourRect))
                 }
 
                 Log.d(logTag, "threshold: $threshold\n" +
@@ -101,12 +104,13 @@ class ContourPupilDetector {
 
             contours.clear()
 
-            threshold += 1
+            threshold += thresholdStep
         }
     }
 
-    fun clear() {
-        detectedRects.clear()
-        detectedImages.clear()
+
+    override fun clear() {
+        mutableDetectedRects.clear()
+        mutableDetectedImages.clear()
     }
 }
