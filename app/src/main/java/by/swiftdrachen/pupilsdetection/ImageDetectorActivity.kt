@@ -73,32 +73,12 @@ class ImageDetectorActivity : AppCompatActivity() {
             throw Exception("Cascades not loaded.")
         }
 
-        val faceDetector: FacePartDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
-        val eyeDetector: FacePartDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
-        val pupilDetector: FacePartDetector = PupilContourDetector(pupilDetectorConfig)
-
-        faceDetector.targetImage = chosenMat
-        faceDetector.detect()
-        val faces = faceDetector.detectedImages
-        for (faceIndex in faces.indices) {
-            val face = faces[faceIndex]
-            sessionFileManager.saveMat(face, "detected_face_$faceIndex")
-
-            eyeDetector.targetImage = face
-            eyeDetector.detect()
-            val eyes = eyeDetector.detectedImages
-            for (eyeIndex in eyes.indices) {
-                val eye = eyes[eyeIndex]
-                sessionFileManager.saveMat(eye, "detected_eye_${faceIndex}_${eyeIndex}")
-
-                pupilDetector.targetImage = eye
-                pupilDetector.detect()
-                val pupils = pupilDetector.detectedImages
-                for (pupilIndex in pupils.indices) {
-                    val pupil = pupils[pupilIndex]
-                    sessionFileManager.saveMat(pupil, "detected_pupil_${faceIndex}_${eyeIndex}_${pupilIndex}")
-                }
-            }
-        }
+        val eyeTracker = EyeTracker()
+        eyeTracker.targetImage = chosenMat
+        eyeTracker.sessionFileManager = sessionFileManager
+        eyeTracker.faceDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
+        eyeTracker.eyeDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
+        eyeTracker.pupilDetector = PupilContourDetector(pupilDetectorConfig)
+        eyeTracker.detect()
     }
 }
