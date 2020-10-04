@@ -1,13 +1,12 @@
 package by.swiftdrachen.pupilsdetection.tracking.detectors
 
-import android.util.Log
 import org.opencv.core.Mat
+import org.opencv.core.Point
 import org.opencv.core.Rect
 
 class EyeCascadeClassifierDetector(
         private val cascadeClassifierDetector: CascadeClassifierDetector) : FacePartDetector {
     private var mutableDetectedRects: MutableList<Rect> = mutableListOf()
-
     private var mutableDetectedImages: MutableList<Mat> = mutableListOf()
 
     override var targetImage: Mat?
@@ -20,19 +19,20 @@ class EyeCascadeClassifierDetector(
     override val detectedImages: List<Mat>
         get() = mutableDetectedImages
 
+
     override fun detect() {
         cascadeClassifierDetector.detect()
 
         val sourceImage = targetImage!!
+        val sourceImageHeight = sourceImage.height().toDouble()
 
         cascadeClassifierDetector.detectedRects.forEach {rect ->
-            val roiHeight = sourceImage.height().toDouble()
-            val y = rect.y.toDouble()
-            val height = rect.height.toDouble()
+            val eyeCenter = Point(
+                    rect.x.toDouble() + rect.width.toDouble() * 0.5,
+                    rect.y.toDouble() + rect.height.toDouble() * 0.5)
+            val eyeSize = Point(rect.width.toDouble(), rect.height.toDouble())
 
-            Log.d("PIDOR", "roiHeight: ${roiHeight}, y: $y, height: $height")
-
-            if (y + height * 0.5 <= roiHeight * 0.6) {
+            if (eyeCenter.y + eyeSize.y * 0.5 <= sourceImageHeight * 0.6) {
                 mutableDetectedRects.add(rect)
             }
         }
