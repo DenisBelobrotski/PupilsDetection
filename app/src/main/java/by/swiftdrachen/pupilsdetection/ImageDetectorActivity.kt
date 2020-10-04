@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import by.swiftdrachen.pupilsdetection.tracking.detectors.CascadeClassifierDetector
-import by.swiftdrachen.pupilsdetection.tracking.detectors.PupilContourDetector
-import by.swiftdrachen.pupilsdetection.tracking.detectors.FacePartDetector
 import by.swiftdrachen.pupilsdetection.tracking.configs.EyeCascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.tracking.configs.FaceCascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.tracking.configs.PupilContourDetectorConfig
+import by.swiftdrachen.pupilsdetection.tracking.detectors.CascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.EyeCascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.FaceCascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.PupilContourDetector
+import by.swiftdrachen.pupilsdetection.tracking.exceptions.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.utils.SessionFileManager
@@ -61,23 +63,25 @@ class ImageDetectorActivity : AppCompatActivity() {
         //TODO: to gray and histogram equalization
 //        val preparedMat = prepareMat(chosenMat)
 
-        val faceCascade = OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
+        val faceCascade =
+            OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
+            ?: throw CascadeClassifierNotLoadedException(FACE_CASCADE_PATH)
         val faceDetectorConfig = FaceCascadeClassifierConfig()
+        val faceCascadeClassifierDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
-        val eyeCascade = OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
+        val eyeCascade =
+            OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
+            ?: throw CascadeClassifierNotLoadedException(EYE_CASCADE_PATH)
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
+        val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
         val pupilDetectorConfig = PupilContourDetectorConfig()
-
-        if (faceCascade == null || eyeCascade == null) {
-            throw Exception("Cascades not loaded.")
-        }
 
         val eyeTracker = EyeTracker()
         eyeTracker.targetImage = chosenMat
         eyeTracker.sessionFileManager = sessionFileManager
-        eyeTracker.faceDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
-        eyeTracker.eyeDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
+        eyeTracker.faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
+        eyeTracker.eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
         eyeTracker.pupilDetector = PupilContourDetector(pupilDetectorConfig)
         eyeTracker.detect()
     }

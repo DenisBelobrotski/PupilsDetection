@@ -9,5 +9,7 @@ interface FacePartDetector {
     val detectedImages: List<Mat>
 
     fun detect()
+
+    //TODO: release mats in implementations
     fun clear()
 }

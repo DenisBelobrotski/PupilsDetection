@@ -13,14 +13,14 @@ class EyeTracker {
     var pupilDetector: FacePartDetector? = null
     var sessionFileManager: SessionFileManager? = null
 
-    private var mutableLeftEyeRect: Rect? = null
-    private var mutableRightEyeRect: Rect? = null
+    private var mutableLeftPupilRect: Rect? = null
+    private var mutableRightPupilRect: Rect? = null
 
-    val leftEyeRect: Rect?
-        get() = mutableLeftEyeRect
+    val leftPupilRect: Rect?
+        get() = mutableLeftPupilRect
 
-    val rightEyeRect: Rect?
-        get() = mutableRightEyeRect
+    val rightPupilRect: Rect?
+        get() = mutableRightPupilRect
 
 
     fun detect() {
