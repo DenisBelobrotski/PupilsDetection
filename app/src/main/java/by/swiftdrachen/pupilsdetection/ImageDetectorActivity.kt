@@ -7,11 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.configs.EyeCascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.tracking.configs.FaceCascadeClassifierConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.PupilBlobDetectorConfig
 import by.swiftdrachen.pupilsdetection.tracking.configs.PupilContourDetectorConfig
-import by.swiftdrachen.pupilsdetection.tracking.detectors.CascadeClassifierDetector
-import by.swiftdrachen.pupilsdetection.tracking.detectors.EyeCascadeClassifierDetector
-import by.swiftdrachen.pupilsdetection.tracking.detectors.FaceCascadeClassifierDetector
-import by.swiftdrachen.pupilsdetection.tracking.detectors.PupilContourDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.*
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 import by.swiftdrachen.pupilsdetection.utils.OpenCvUtils
@@ -75,14 +73,16 @@ class ImageDetectorActivity : AppCompatActivity() {
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
         val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
-        val pupilDetectorConfig = PupilContourDetectorConfig()
+//        val pupilDetectorConfig = PupilContourDetectorConfig()
+        val pupilDetectorConfig = PupilBlobDetectorConfig()
 
         val eyeTracker = EyeTracker()
         eyeTracker.targetImage = chosenMat
         eyeTracker.sessionFileManager = sessionFileManager
         eyeTracker.faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
         eyeTracker.eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
-        eyeTracker.pupilDetector = PupilContourDetector(pupilDetectorConfig)
+//        eyeTracker.pupilDetector = PupilContourDetector(pupilDetectorConfig)
+        eyeTracker.pupilDetector = PupilBlobDetector(pupilDetectorConfig, sessionFileManager)
         eyeTracker.detect()
     }
 }

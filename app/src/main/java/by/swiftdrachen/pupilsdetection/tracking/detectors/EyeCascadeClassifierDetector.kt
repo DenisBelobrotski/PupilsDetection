@@ -21,6 +21,8 @@ class EyeCascadeClassifierDetector(
 
 
     override fun detect() {
+        clear()
+
         cascadeClassifierDetector.detect()
 
         val sourceImage = targetImage!!
