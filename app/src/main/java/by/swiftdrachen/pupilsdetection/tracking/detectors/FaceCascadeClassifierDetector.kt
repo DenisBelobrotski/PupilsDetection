@@ -4,16 +4,13 @@ import org.opencv.core.Mat
 import org.opencv.core.Rect
 
 class FaceCascadeClassifierDetector(
-        private val cascadeClassifierDetector: CascadeClassifierDetector) : FacePartDetector {
-    override var targetImage: Mat?
-        get() = cascadeClassifierDetector.targetImage
-        set(value) { cascadeClassifierDetector.targetImage = value }
+        private val cascadeClassifierDetector: CascadeClassifierDetector) : RectDetector {
+    override var processingImage: Mat?
+        get() = cascadeClassifierDetector.processingImage
+        set(value) { cascadeClassifierDetector.processingImage = value }
 
     override val detectedRects: List<Rect>
         get() = cascadeClassifierDetector.detectedRects
-
-    override val detectedImages: List<Mat>
-        get() = cascadeClassifierDetector.detectedImages
 
     override fun detect() {
         cascadeClassifierDetector.detect()

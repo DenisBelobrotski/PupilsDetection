@@ -2,10 +2,10 @@ package by.swiftdrachen.pupilsdetection.tracking.configs
 
 class FaceCascadeClassifierConfig : CascadeClassifierConfig {
     override val scaleFactor: Double
-        get() = 1.3//1.1
+        get() = 1.3
 
     override val minNeighbours: Int
-        get() = 5//4
+        get() = 5
 
     override val flags: Int
         get() = 0

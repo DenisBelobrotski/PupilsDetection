@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import by.swiftdrachen.pupilsdetection.tracking.configs.EyeCascadeClassifierConfig
-import by.swiftdrachen.pupilsdetection.tracking.configs.FaceCascadeClassifierConfig
-import by.swiftdrachen.pupilsdetection.tracking.configs.PupilBlobDetectorConfig
-import by.swiftdrachen.pupilsdetection.tracking.configs.PupilContourDetectorConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.*
 import by.swiftdrachen.pupilsdetection.tracking.detectors.*
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
@@ -56,33 +53,34 @@ class ImageDetectorActivity : AppCompatActivity() {
             return
         }
 
-        sessionFileManager.saveMat(chosenMat, "source_image")
-
-        //TODO: to gray and histogram equalization
-//        val preparedMat = prepareMat(chosenMat)
-
         val faceCascade =
             OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
-            ?: throw CascadeClassifierNotLoadedException(FACE_CASCADE_PATH)
+                ?: throw CascadeClassifierNotLoadedException(FACE_CASCADE_PATH)
         val faceDetectorConfig = FaceCascadeClassifierConfig()
-        val faceCascadeClassifierDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
+        val faceCascadeClassifierDetector =
+            CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
         val eyeCascade =
             OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
-            ?: throw CascadeClassifierNotLoadedException(EYE_CASCADE_PATH)
+                ?: throw CascadeClassifierNotLoadedException(EYE_CASCADE_PATH)
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
         val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
-//        val pupilDetectorConfig = PupilContourDetectorConfig()
-        val pupilDetectorConfig = PupilBlobDetectorConfig()
+        val eyePreprocessorConfig = EyePreprocessorConfig()
+
+        val scleraDetectorConfig = ScleraDetectorConfig()
+        val pupilDetectorConfig = PupilDetectorConfig()
 
         val eyeTracker = EyeTracker()
-        eyeTracker.targetImage = chosenMat
+        eyeTracker.sourceImage = chosenMat
         eyeTracker.sessionFileManager = sessionFileManager
         eyeTracker.faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
         eyeTracker.eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
-//        eyeTracker.pupilDetector = PupilContourDetector(pupilDetectorConfig)
-        eyeTracker.pupilDetector = PupilBlobDetector(pupilDetectorConfig, sessionFileManager)
+        eyeTracker.eyePreprocessor = EyePreprocessor(eyePreprocessorConfig)
+        eyeTracker.scleraDetector = ScleraDetector(scleraDetectorConfig)
+        eyeTracker.pupilDetector = PupilDetector(pupilDetectorConfig)
         eyeTracker.detect()
+
+        Toast.makeText(this, "Detection done", Toast.LENGTH_LONG).show()
     }
 }

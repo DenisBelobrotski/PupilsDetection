@@ -1,12 +1,11 @@
 package by.swiftdrachen.pupilsdetection.tracking.detectors
 
 import org.opencv.core.Mat
-import org.opencv.core.Rect
+import org.opencv.core.Point
 
-interface FacePartDetector {
-    var targetImage: Mat?
-    val detectedRects: List<Rect>
-    val detectedImages: List<Mat>
+interface PointDetector {
+    var processingImage: Mat?
+    val detectedPoint: Point
 
     fun detect()
 

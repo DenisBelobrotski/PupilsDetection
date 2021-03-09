@@ -1,26 +1,26 @@
 package by.swiftdrachen.pupilsdetection
 
-import by.swiftdrachen.pupilsdetection.tracking.detectors.FacePartDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.EyePreprocessor
+import by.swiftdrachen.pupilsdetection.tracking.detectors.PointDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.RectDetector
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.utils.SessionFileManager
+import org.opencv.core.Core
 import org.opencv.core.Mat
-import org.opencv.core.Rect
+import org.opencv.imgproc.Imgproc
 
 class EyeTracker {
-    var targetImage: Mat? = null
-    var faceDetector: FacePartDetector? = null
-    var eyeDetector: FacePartDetector? = null
-    var pupilDetector: FacePartDetector? = null
+    private val processingImage = Mat()
+    private val eyePreprocessedImage = Mat()
+    private val hsvChannels: MutableList<Mat> = ArrayList(3)
+
+    var sourceImage: Mat? = null
+    var faceDetector: RectDetector? = null
+    var eyeDetector: RectDetector? = null
+    var eyePreprocessor: EyePreprocessor? = null
+    var scleraDetector: PointDetector? = null
+    var pupilDetector: PointDetector? = null
     var sessionFileManager: SessionFileManager? = null
-
-    private var mutableLeftPupilRect: Rect? = null
-    private var mutableRightPupilRect: Rect? = null
-
-    val leftPupilRect: Rect?
-        get() = mutableLeftPupilRect
-
-    val rightPupilRect: Rect?
-        get() = mutableRightPupilRect
 
 
     fun detect() {
@@ -29,39 +29,62 @@ class EyeTracker {
             throw EyeTrackerNotPreparedException(exceptionReason)
         }
 
+        val sourceImage = this.sourceImage!!
         val faceDetector = this.faceDetector!!
         val eyeDetector = this.eyeDetector!!
+        val eyePreprocessor = this.eyePreprocessor!!
+        val scleraDetector = this.scleraDetector!!
         val pupilDetector = this.pupilDetector!!
         val sessionFileManager = this.sessionFileManager!!
 
-        faceDetector.targetImage = targetImage
+        sessionFileManager.saveMat(sourceImage, "source_image")
+
+        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_BGRA2GRAY)
+        sessionFileManager.saveMat(processingImage, "gray_image")
+
+        Imgproc.equalizeHist(processingImage, processingImage)
+        sessionFileManager.saveMat(processingImage, "hist_equalized_image")
+
+        faceDetector.processingImage = processingImage
         faceDetector.detect()
-        val faces = faceDetector.detectedImages
-        for (faceIndex in faces.indices) {
-            val face = faces[faceIndex]
-            sessionFileManager.saveMat(face, "detected_face_$faceIndex")
+        val faceRects = faceDetector.detectedRects
+        for (faceIndex in faceRects.indices) {
+            val faceRect = faceRects[faceIndex]
+            val sourceFaceRoi = sourceImage.submat(faceRect)
+            val processingFaceRoi = processingImage.submat(faceRect)
+            sessionFileManager.saveMat(processingFaceRoi, "detected_face_$faceIndex")
 
-            eyeDetector.targetImage = face
+            eyeDetector.processingImage = processingFaceRoi
             eyeDetector.detect()
-            val eyes = eyeDetector.detectedImages
-            for (eyeIndex in eyes.indices) {
-                val eye = eyes[eyeIndex]
-                sessionFileManager.saveMat(eye, "detected_eye_${faceIndex}_${eyeIndex}")
+            val eyeRects = eyeDetector.detectedRects
+            for (eyeIndex in eyeRects.indices) {
+                val eyeRect = eyeRects[eyeIndex]
+                val sourceEyeRoi = sourceFaceRoi.submat(eyeRect)
+                val processingEyeRoi = processingFaceRoi.submat(eyeRect)
+                sessionFileManager.saveMat(processingEyeRoi, "detected_eye_${faceIndex}_${eyeIndex}")
 
-                pupilDetector.targetImage = eye
-                pupilDetector.detect()
-                val pupils = pupilDetector.detectedImages
-                for (pupilIndex in pupils.indices) {
-                    val pupil = pupils[pupilIndex]
-                    sessionFileManager.saveMat(pupil, "detected_pupil_${faceIndex}_${eyeIndex}_${pupilIndex}")
-                }
+
+
+                eyePreprocessor.prepare(sourceEyeRoi, eyePreprocessedImage, sessionFileManager)
+
+                sessionFileManager.saveMat(eyePreprocessedImage, "preprocessed_eye_${faceIndex}_${eyeIndex}")
+
+                Core.split(eyePreprocessedImage, hsvChannels)
+
+                sessionFileManager.saveMat(hsvChannels[0], "eye_hue_${faceIndex}_${eyeIndex}")
+                sessionFileManager.saveMat(hsvChannels[1], "eye_saturation_${faceIndex}_${eyeIndex}")
+                sessionFileManager.saveMat(hsvChannels[2], "eye_value_${faceIndex}_${eyeIndex}")
+
+                // TODO: release mats
+
+                hsvChannels.clear()
             }
         }
     }
 
 
     private fun isDetectionAvailable(): String? {
-        if (targetImage == null) {
+        if (sourceImage == null) {
             return "Target image not set"
         }
 
@@ -71,6 +94,14 @@ class EyeTracker {
 
         if (eyeDetector == null) {
             return "Eye detector not set"
+        }
+
+        if (eyePreprocessor == null) {
+            return "Eye preprocessor not set"
+        }
+
+        if (scleraDetector == null) {
+            return "Sclera detector not set"
         }
 
         if (pupilDetector == null) {
