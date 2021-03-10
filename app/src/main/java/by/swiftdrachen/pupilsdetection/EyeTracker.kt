@@ -22,6 +22,9 @@ class EyeTracker {
     var pupilDetector: PointDetector? = null
     var sessionFileManager: SessionFileManager? = null
 
+    private fun saveMat(fileName: String, image: Mat) {
+        sessionFileManager!!.saveMat(image, fileName)
+    }
 
     fun detect() {
         val exceptionReason = isDetectionAvailable()
@@ -36,6 +39,28 @@ class EyeTracker {
         val scleraDetector = this.scleraDetector!!
         val pupilDetector = this.pupilDetector!!
         val sessionFileManager = this.sessionFileManager!!
+
+        val processingImage = Mat()
+
+        saveMat("bgr", sourceImage)
+
+        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_BGR2HSV)
+
+        saveMat("hsv", processingImage)
+
+        val hsvChannels: MutableList<Mat> = ArrayList(3)
+
+        Core.split(processingImage, hsvChannels)
+
+        val hue = hsvChannels[0]
+        val saturation = hsvChannels[1]
+        val value = hsvChannels[2]
+
+        saveMat("hue", hue)
+        saveMat("saturation", saturation)
+        saveMat("value", value)
+
+        return
 
         sessionFileManager.saveMat(sourceImage, "source_image")
 
