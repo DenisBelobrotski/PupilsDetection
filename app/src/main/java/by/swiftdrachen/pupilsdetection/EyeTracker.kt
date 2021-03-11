@@ -42,9 +42,9 @@ class EyeTracker {
 
         val processingImage = Mat()
 
-        saveMat("bgr", sourceImage)
+        saveMat("rgb", sourceImage)
 
-        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_BGR2HSV)
+        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2HSV)
 
         saveMat("hsv", processingImage)
 
