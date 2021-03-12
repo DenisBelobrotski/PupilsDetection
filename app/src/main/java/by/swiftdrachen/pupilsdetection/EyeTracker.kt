@@ -39,7 +39,7 @@ class EyeTracker {
 
         sessionFileManager.saveMat(sourceImage, "source_image")
 
-        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY)
+        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY, 1)
         sessionFileManager.saveMat(processingImage, "gray_image")
 
         Imgproc.equalizeHist(processingImage, processingImage)
@@ -78,6 +78,8 @@ class EyeTracker {
                 sessionFileManager.saveMat(hue, "eye_hue_${faceIndex}_${eyeIndex}")
                 sessionFileManager.saveMat(saturation, "eye_saturation_${faceIndex}_${eyeIndex}")
                 sessionFileManager.saveMat(value, "eye_value_${faceIndex}_${eyeIndex}")
+
+
 
                 hue.release()
                 saturation.release()
