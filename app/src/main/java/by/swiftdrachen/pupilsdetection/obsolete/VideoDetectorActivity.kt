@@ -54,10 +54,7 @@ class VideoDetectorActivity : DetectorActivity() {
         val outputFile = createVideoFile(fileExtension)
 
         userFileInputStream?.use {
-            val videoFaceDetector = VideoFaceDetector(userFileInputStream, outputFile, faceDetector, false)
-            videoFaceDetector.use {
-                videoFaceDetector.detectFaces()
-            }
+
         }
 
         Toast.makeText(this, "Processed file saved as\n" +
