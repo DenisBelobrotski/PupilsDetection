@@ -36,15 +36,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-//    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
-//    implementation fileTree(dir: 'libs/javacv-stripped', include: ['*.aar', '*.jar'], exclude: [])
-
-    implementation fileTree(dir: 'libs/javacv-stripped/javacv', include: ['*.aar', '*.jar'], exclude: [])
-    implementation fileTree(dir: 'libs/javacv-stripped/javacpp', include: ['*.aar', '*.jar'], exclude: [])
-
-    implementation fileTree(dir: 'libs/javacv-stripped/ffmpeg', include: ['*.aar', '*.jar'], exclude: [])
-
-    implementation fileTree(dir: 'libs/javacv-stripped/opencv', include: ['*.aar', '*.jar'], exclude: [])
-    implementation fileTree(dir: 'libs/javacv-stripped/openblas', include: ['*.aar', '*.jar'], exclude: [])
     implementation project(":opencv-sdk")
 }
