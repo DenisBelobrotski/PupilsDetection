@@ -4,13 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import by.swiftdrachen.pupilsdetection.R
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 import by.swiftdrachen.pupilsdetection.utils.FileSystemUtils
-import by.swiftdrachen.pupilsdetection.R
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 
 class VideoDetectorActivity : DetectorActivity() {

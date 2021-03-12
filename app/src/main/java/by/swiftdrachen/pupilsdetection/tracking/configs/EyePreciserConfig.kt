@@ -1,10 +1,9 @@
 package by.swiftdrachen.pupilsdetection.tracking.configs
 
-class PupilDetectorConfig {
-    val shouldEqualizeHistogram = true
-    val threshold = 10
+class EyePreciserConfig {
+    val threshold = 30
     val maxThreshold = 255
-    val erosionIterationsCount = 2
+    val erosionIterationsCount = 1
     val dilationIterationsCount = 4
     val isErosionEnabled = true
     val isDilationEnabled = true

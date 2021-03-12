@@ -1,4 +1,5 @@
 package by.swiftdrachen.pupilsdetection.tracking.configs
 
-class ScleraDetectorConfig {
+class EyeTrackerConfig {
+    val drawDebugMarkers = true
 }

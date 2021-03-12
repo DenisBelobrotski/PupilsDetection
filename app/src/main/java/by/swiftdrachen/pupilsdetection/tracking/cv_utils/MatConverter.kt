@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.utils
+package by.swiftdrachen.pupilsdetection.tracking.cv_utils
 
 import org.bytedeco.javacv.OpenCVFrameConverter
 

@@ -13,7 +13,8 @@ class FileSystemUtils {
     companion object {
         fun loadBitmapResource(context: Context, assetPath: String): Bitmap {
             val assetInputStream = context.assets.open(assetPath)
-            val resultBitmap = decodeBitmap(assetInputStream)
+            val resultBitmap =
+                decodeBitmap(assetInputStream)
             assetInputStream.close()
 
             return resultBitmap
@@ -24,7 +25,8 @@ class FileSystemUtils {
             val inputStream = context.contentResolver.openInputStream(uri)
 
             inputStream?.let {
-                resultBitmap = decodeBitmap(inputStream)
+                resultBitmap =
+                    decodeBitmap(inputStream)
             }
 
             return resultBitmap
@@ -75,7 +77,8 @@ class FileSystemUtils {
                 assetFileName?.let {
                     val inputStream = context.assets.open(assetPath)
 
-                    cachedFile = writeCacheFile(context, inputStream, assetFileName, rewrite, public)
+                    cachedFile =
+                        writeCacheFile(context, inputStream, assetFileName, rewrite, public)
 
                     inputStream.close()
                 }
@@ -86,11 +89,14 @@ class FileSystemUtils {
 
         fun cacheUserFile(context: Context, userFileUri: Uri, rewrite: Boolean = false): File? {
             var cachedFile: File? = null
-            val userFileName = getUserFileName(context, userFileUri)
-            val userFileInputStream = openUserFileInputStream(context, userFileUri)
+            val userFileName =
+                getUserFileName(context, userFileUri)
+            val userFileInputStream =
+                openUserFileInputStream(context, userFileUri)
 
             if (userFileName != null && userFileInputStream != null) {
-                cachedFile = writeCacheFile(context, userFileInputStream, userFileName, rewrite)
+                cachedFile =
+                    writeCacheFile(context, userFileInputStream, userFileName, rewrite)
             }
 
             userFileInputStream?.close()
