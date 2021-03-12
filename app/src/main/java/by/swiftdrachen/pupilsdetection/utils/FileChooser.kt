@@ -10,12 +10,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import by.swiftdrachen.pupilsdetection.R
 
-private const val VIDEO_FILE_CHOOSER_REQUEST_CODE = 322
-
 class FileChooser(
     private val targetActivity: Activity,
     private val baseMimeType: String,
     private val concreteMimeType: String) {
+
+
 
     private val lastChosenFileUriMutable: MutableLiveData<Uri> by lazy { MutableLiveData<Uri>() }
     val lastChosenFileUri: LiveData<Uri>
@@ -30,7 +30,7 @@ class FileChooser(
         chooserIntent = Intent.createChooser(chooserIntent, chooserTip)
 
         try {
-            targetActivity.startActivityForResult(chooserIntent, VIDEO_FILE_CHOOSER_REQUEST_CODE)
+            targetActivity.startActivityForResult(chooserIntent, VideoFileChooserRequestCode)
         } catch (exception: ActivityNotFoundException) {
             val message = targetActivity.resources.getString(R.string.file_manager_error)
             Toast.makeText(targetActivity, message, Toast.LENGTH_SHORT).show()
@@ -38,12 +38,16 @@ class FileChooser(
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (requestCode == VIDEO_FILE_CHOOSER_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == VideoFileChooserRequestCode && resultCode == RESULT_OK) {
             val fileUri = intent?.data
             fileUri?.let {
                 lastChosenFileUriMutable.value = fileUri
                 Toast.makeText(targetActivity, fileUri.toString(), Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    companion object {
+        private const val VideoFileChooserRequestCode = 322
     }
 }

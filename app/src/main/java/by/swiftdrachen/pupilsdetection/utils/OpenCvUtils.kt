@@ -9,10 +9,10 @@ import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
 import java.io.IOException
 
-const val ShouldShowCachedCascadesForUser = true
-
 class OpenCvUtils {
     companion object {
+        private const val ShouldShowCachedCascadesForUser = true
+
         fun loadLibraries() {
             val loader = OpenCVNativeLoader()
             loader.init()

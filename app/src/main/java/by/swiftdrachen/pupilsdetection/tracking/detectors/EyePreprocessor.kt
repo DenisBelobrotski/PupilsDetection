@@ -21,16 +21,6 @@ class EyePreprocessor(private val config: EyePreprocessorConfig) {
 
         val cutImage = sourceImage.submat(rowsRange, colsRange)
 
-        sessionFileManager.saveMat(cutImage, "cut_eye_bgra")
-
-//        Imgproc.cvtColor(cutImage, processedImage, Imgproc.COLOR_BGRA2BGR)
-//        sessionFileManager.saveMat(processedImage, "cut_eye_bgr")
-
-//        Imgproc.cvtColor(processedImage, processedImage, Imgproc.COLOR_BGR2HSV)
-//        sessionFileManager.saveMat(processedImage, "cut_eye_hsv")
-
-        // TODO: incorrect conversion
-        Imgproc.cvtColor(cutImage, processedImage, Imgproc.COLOR_BGR2HSV)
-        sessionFileManager.saveMat(processedImage, "cut_eye_hsv")
+        Imgproc.cvtColor(cutImage, processedImage, Imgproc.COLOR_RGB2HSV)
     }
 }

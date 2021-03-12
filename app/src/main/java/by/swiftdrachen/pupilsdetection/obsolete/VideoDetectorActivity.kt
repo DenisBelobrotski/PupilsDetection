@@ -11,9 +11,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val ProcessedVideosFolderName = "processed_videos"
-private const val FileNameCommonPart = "processed_video_file"
-private const val FileNameDateFormat = "yyyy-MM-dd_HH:mm:ss:SSS"
+
 
 class VideoDetectorActivity : DetectorActivity() {
     private val videoFileChooser by lazy { FileChooser(this, "video", "*") }
@@ -90,5 +88,11 @@ class VideoDetectorActivity : DetectorActivity() {
         val currentTime = Calendar.getInstance().time
         val formattedDate = fileNameDateFormatter.format(currentTime)
         return "${FileNameCommonPart}_${formattedDate}.${fileExtension}"
+    }
+
+    companion object {
+        private const val ProcessedVideosFolderName = "processed_videos"
+        private const val FileNameCommonPart = "processed_video_file"
+        private const val FileNameDateFormat = "yyyy-MM-dd_HH:mm:ss:SSS"
     }
 }

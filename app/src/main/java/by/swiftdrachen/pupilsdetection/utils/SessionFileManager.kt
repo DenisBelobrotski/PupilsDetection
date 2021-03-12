@@ -42,7 +42,7 @@ class SessionFileManager(private val context: Context) {
 
 
     /**
-     * @param mat is a valid output Mat object of the RGBA format
+     * @param mat is a valid output Mat object of the RGB(A) format
      * */
     fun saveMat(mat: Mat, fileNameBase: String) {
         val bitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), BitmapConfig)

@@ -39,7 +39,7 @@ class EyeTracker {
 
         sessionFileManager.saveMat(sourceImage, "source_image")
 
-        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_BGRA2GRAY)
+        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY)
         sessionFileManager.saveMat(processingImage, "gray_image")
 
         Imgproc.equalizeHist(processingImage, processingImage)
@@ -71,11 +71,20 @@ class EyeTracker {
 
                 Core.split(eyePreprocessedImage, hsvChannels)
 
-                sessionFileManager.saveMat(hsvChannels[0], "eye_hue_${faceIndex}_${eyeIndex}")
-                sessionFileManager.saveMat(hsvChannels[1], "eye_saturation_${faceIndex}_${eyeIndex}")
-                sessionFileManager.saveMat(hsvChannels[2], "eye_value_${faceIndex}_${eyeIndex}")
+                val hue = hsvChannels[0]
+                val saturation = hsvChannels[1]
+                val value = hsvChannels[2]
 
-                // TODO: release mats
+                sessionFileManager.saveMat(hue, "eye_hue_${faceIndex}_${eyeIndex}")
+                sessionFileManager.saveMat(saturation, "eye_saturation_${faceIndex}_${eyeIndex}")
+                sessionFileManager.saveMat(value, "eye_value_${faceIndex}_${eyeIndex}")
+
+                hue.release()
+                saturation.release()
+                value.release()
+
+                // TODO: call every few frames (https://github.com/opencv/opencv/issues/4961)
+//                System.gc()
 
                 hsvChannels.clear()
             }
