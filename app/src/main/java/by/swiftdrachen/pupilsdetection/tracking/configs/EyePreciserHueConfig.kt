@@ -1,6 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.configs
 
-class EyePreciserConfig {
+class EyePreciserHueConfig {
     val threshold = 30
     val maxThreshold = 255
     val erosionIterationsCount = 1

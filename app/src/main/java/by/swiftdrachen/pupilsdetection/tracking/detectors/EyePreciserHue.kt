@@ -1,14 +1,14 @@
 package by.swiftdrachen.pupilsdetection.tracking.detectors
 
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.getMassCenter8UC1
-import by.swiftdrachen.pupilsdetection.tracking.configs.EyePreciserConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.EyePreciserHueConfig
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class EyePreciser(private val config: EyePreciserConfig) : PointDetector {
+class EyePreciserHue(private val config: EyePreciserHueConfig) : PointDetector {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()
