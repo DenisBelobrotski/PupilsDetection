@@ -77,13 +77,13 @@ class ImageDetectorActivity : AppCompatActivity() {
         val eyePreciser = EyePreciserHue(eyePreciserConfig)
         val pupilDetector = PupilDetector(pupilDetectorConfig)
         val eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser, pupilDetector)
-        eyeProcessor.sessionFileManager = sessionFileManager
+//        eyeProcessor.sessionFileManager = sessionFileManager
 
         val eyeTrackerConfig = EyeTrackerConfig()
 
         val eyeTracker = EyeTracker(eyeTrackerConfig)
         eyeTracker.sourceImage = chosenMat
-        eyeTracker.sessionFileManager = sessionFileManager
+//        eyeTracker.sessionFileManager = sessionFileManager
         eyeTracker.faceDetector = faceDetector
         eyeTracker.eyeDetector = eyeDetector
         eyeTracker.eyeProcessor = eyeProcessor
