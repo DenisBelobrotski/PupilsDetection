@@ -11,6 +11,7 @@ import by.swiftdrachen.pupilsdetection.tracking.cv_utils.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detectors.*
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.utils.SimpleLogger
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 
 class ImageDetectorActivity : AppCompatActivity() {
@@ -91,9 +92,18 @@ class ImageDetectorActivity : AppCompatActivity() {
         eyePreciser.sessionFileManager = sessionFileManager
         pupilDetector.sessionFileManager = sessionFileManager
 
+        val logger = SimpleLogger()
+
+        logger.addLog("Detection started")
         eyeTracker.detect()
+        logger.addLog("Detection done")
 
         sessionFileManager.saveMat(chosenMat, "result")
+
+        logger.addLog("Result saving done")
+
+        val logResult = logger.flushLogs()
+        // TODO: save to log file
 
         faceDetector.clear()
         eyeDetector.clear()
