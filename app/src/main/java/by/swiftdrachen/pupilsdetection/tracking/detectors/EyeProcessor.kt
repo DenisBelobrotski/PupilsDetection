@@ -65,7 +65,7 @@ class EyeProcessor(
         mutableDetectedPupilCenter = pupilDetector.detectedPoint
         mutableDetectedPupilCenter.y += topOffset
 
-        eyePreciser.processingImage = hue
+        eyePreciser.processingImage = saturation
         eyePreciser.detect()
         mutableDetectedEyeCenter = eyePreciser.detectedPoint
         mutableDetectedEyeCenter.y += topOffset

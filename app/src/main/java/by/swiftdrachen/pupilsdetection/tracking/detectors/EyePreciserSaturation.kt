@@ -1,14 +1,14 @@
 package by.swiftdrachen.pupilsdetection.tracking.detectors
 
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.getMassCenter8UC1
-import by.swiftdrachen.pupilsdetection.tracking.configs.EyePreciserHueConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.EyePreciserSaturationConfig
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class EyePreciserHue(private val config: EyePreciserHueConfig) : PointDetector {
+class EyePreciserSaturation(private val config: EyePreciserSaturationConfig) : PointDetector {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()
@@ -32,10 +32,15 @@ class EyePreciserHue(private val config: EyePreciserHueConfig) : PointDetector {
 
         sessionFileManager?.saveMat(processingImage, "eye_preciser_source")
 
+        if (config.shouldEqualizeHistogram) {
+            Imgproc.equalizeHist(processingImage, processingImage)
+            sessionFileManager?.saveMat(processingImage, "eye_preciser_equalize_hist")
+        }
+
         Imgproc.threshold(
                 processingImage, processingImage,
                 config.threshold.toDouble(), config.maxThreshold.toDouble(),
-                Imgproc.THRESH_BINARY)
+                Imgproc.THRESH_BINARY_INV)
         sessionFileManager?.saveMat(processingImage, "eye_preciser_threshold")
 
         if (config.isErosionEnabled) {

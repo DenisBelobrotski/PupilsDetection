@@ -69,12 +69,12 @@ class ImageDetectorActivity : AppCompatActivity() {
 
         val eyeProcessorConfig = EyeProcessorConfig()
 
-        val eyePreciserConfig = EyePreciserHueConfig()
+        val eyePreciserConfig = EyePreciserSaturationConfig()
         val pupilDetectorConfig = PupilDetectorConfig()
 
         val faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
         val eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
-        val eyePreciser = EyePreciserHue(eyePreciserConfig)
+        val eyePreciser = EyePreciserSaturation(eyePreciserConfig)
         val pupilDetector = PupilDetector(pupilDetectorConfig)
         val eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser, pupilDetector)
 
