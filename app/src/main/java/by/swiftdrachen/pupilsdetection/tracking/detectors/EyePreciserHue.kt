@@ -34,20 +34,20 @@ class EyePreciserHue(private val config: EyePreciserHueConfig) : PointDetector {
                 processingImage, processingImage,
                 config.threshold.toDouble(), config.maxThreshold.toDouble(),
                 Imgproc.THRESH_BINARY)
-        sessionFileManager?.saveMat(processingImage, "eye_pupil_threshold")
+        sessionFileManager?.saveMat(processingImage, "eye_preciser_threshold")
 
         if (config.isErosionEnabled) {
             Imgproc.erode(
                     processingImage, processingImage,
                     erosionKernel, erosionAnchor, config.erosionIterationsCount)
-            sessionFileManager?.saveMat(processingImage, "eye_pupil_erode")
+            sessionFileManager?.saveMat(processingImage, "eye_preciser_erode")
         }
 
         if (config.isDilationEnabled) {
             Imgproc.dilate(
                     processingImage, processingImage,
                     dilationKernel, dilationAnchor, config.dilationIterationsCount)
-            sessionFileManager?.saveMat(processingImage, "eye_pupil_dilate")
+            sessionFileManager?.saveMat(processingImage, "eye_preciser_dilate")
         }
 
         mutableDetectedPoint = getMassCenter8UC1(processingImage)
