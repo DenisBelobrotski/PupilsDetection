@@ -18,8 +18,8 @@ class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
-    private val sessionFileManager: SessionFileManager? by lazy { SessionFileManager(this) }
-//    private val sessionFileManager: SessionFileManager? = null
+
+    private var sessionFileManager: SessionFileManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +33,10 @@ class ImageDetectorActivity : AppCompatActivity() {
         processImageButton.setOnClickListener {
             processImage()
         }
+
+        sessionFileManager = SessionFileManager(this)
+        sessionFileManager?.isDebugImageSavingEnabled = false
+//        sessionFileManager?.isDebugLogSavingEnabled = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -94,13 +98,18 @@ class ImageDetectorActivity : AppCompatActivity() {
         pupilDetector.sessionFileManager = sessionFileManager
 
 
-        sessionFileManager?.addLog("Detection started")
-        eyeTracker.detect()
-        sessionFileManager?.addLog("Detection done")
+        val imageWidth = chosenMat.cols()
+        val imageHeight = chosenMat.rows()
 
+        sessionFileManager?.addLog("ImageDetectorActivity - detection started (${imageWidth}x${imageHeight})")
+        eyeTracker.detect()
+        sessionFileManager?.addLog("ImageDetectorActivity - detection done")
+        sessionFileManager?.saveLogFile("tracking_time")
+
+        sessionFileManager?.addLog("ImageDetectorActivity - result saving started")
         sessionFileManager?.saveMat(chosenMat, "result")
-        sessionFileManager?.addLog("Result saving done")
-        sessionFileManager?.saveLogFile("tracker")
+        sessionFileManager?.addLog("ImageDetectorActivity - result saving done")
+        sessionFileManager?.saveLogFile("tracking_output_time")
 
         faceDetector.clear()
         eyeDetector.clear()

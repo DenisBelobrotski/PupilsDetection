@@ -30,6 +30,8 @@ class EyeProcessor(
         get() = mutableDetectedPupilCenter
 
     fun process() {
+        sessionFileManager?.addLog("EyeProcessor - process started")
+
         if (sourceImage == null) {
             throw EyeTrackerNotPreparedException("Source image cannot be null")
         }
@@ -46,34 +48,45 @@ class EyeProcessor(
         val colsRange = Range(0, colsCount)
 
         val cutImage = sourceImage.submat(rowsRange, colsRange)
+        sessionFileManager?.addLog("EyeProcessor - submat taken")
 
         Imgproc.cvtColor(cutImage, processingImage, Imgproc.COLOR_RGB2HSV)
-
+        sessionFileManager?.addLog("EyeProcessor - RGB to HSV")
 
         Core.split(processingImage, hsvChannels)
+        sessionFileManager?.addLog("EyeProcessor - HSV splitted")
 
         val hue = hsvChannels[0]
         val saturation = hsvChannels[1]
         val value = hsvChannels[2]
 
-        sessionFileManager?.saveMat(hue, "eye_hue")
-        sessionFileManager?.saveMat(saturation, "eye_saturation")
-        sessionFileManager?.saveMat(value, "eye_value")
+        sessionFileManager?.addLog("EyeProcessor - HSV splitted")
+
+        sessionFileManager?.saveMat(hue, "eye_hue", true)
+        sessionFileManager?.saveMat(saturation, "eye_saturation", true)
+        sessionFileManager?.saveMat(value, "eye_value", true)
+        sessionFileManager?.addLog("EyeProcessor - channels saved", true)
 
         pupilDetector.processingImage = value
         pupilDetector.detect()
         mutableDetectedPupilCenter = pupilDetector.detectedPoint
         mutableDetectedPupilCenter.y += topOffset
+        sessionFileManager?.addLog("EyeProcessor - pupil detection done")
 
         eyePreciser.processingImage = saturation
         eyePreciser.detect()
         mutableDetectedEyeCenter = eyePreciser.detectedPoint
         mutableDetectedEyeCenter.y += topOffset
+        sessionFileManager?.addLog("EyeProcessor - eye precision done")
 
         hue.release()
         saturation.release()
         value.release()
 
         hsvChannels.clear()
+
+        sessionFileManager?.addLog("EyeProcessor - memory cleared")
+
+        sessionFileManager?.addLog("EyeProcessor - process done")
     }
 }

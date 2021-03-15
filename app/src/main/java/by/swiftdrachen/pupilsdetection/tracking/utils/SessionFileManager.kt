@@ -35,6 +35,10 @@ class SessionFileManager(private val context: Context) {
         get() = context.getExternalFilesDir(null)
 
 
+    var isDebugImageSavingEnabled = true
+    var isDebugLogSavingEnabled = true
+
+
     init {
         sessionFilesDirectory = File(userFilesFolder, folderName)
         if (!sessionFilesDirectory.exists()) {
@@ -46,7 +50,11 @@ class SessionFileManager(private val context: Context) {
     /**
      * @param mat is a valid output Mat object of the RGB(A) format
      * */
-    fun saveMat(mat: Mat, fileNameBase: String) {
+    fun saveMat(mat: Mat, fileNameBase: String, debug: Boolean = false) {
+        if (!isDebugImageSavingEnabled && debug) {
+            return
+        }
+
         val bitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), BitmapConfig)
         Utils.matToBitmap(mat, bitmap)
         saveBitmap(bitmap, fileNameBase)
@@ -54,7 +62,11 @@ class SessionFileManager(private val context: Context) {
     }
 
 
-    fun saveBitmap(bitmap: Bitmap, fileNameBase: String) {
+    fun saveBitmap(bitmap: Bitmap, fileNameBase: String, debug: Boolean = false) {
+        if (!isDebugImageSavingEnabled && debug) {
+            return
+        }
+
         val outputFile = createFile(fileNameBase, ImageExtension)
         val outputStream = FileOutputStream(outputFile)
         outputStream.use {
@@ -77,17 +89,25 @@ class SessionFileManager(private val context: Context) {
     }
 
 
-    fun addLog(message: String) {
+    fun addLog(message: String, skipIfImagesDisabled: Boolean = false) {
+        if (!isDebugImageSavingEnabled && skipIfImagesDisabled) {
+            return
+        }
+
         logger.addLog(message)
     }
 
 
-    fun saveLogFile(fileNameBase: String) {
+    fun saveLogFile(fileNameBase: String, debug: Boolean = false) {
         if (!logger.isEnabled) {
             return
         }
 
         val logString = logger.flushLogs()
+
+        if (!isDebugLogSavingEnabled && debug) {
+            return
+        }
 
         val outputFile = createFile(fileNameBase, LogExtension)
         val outputStream = FileOutputStream(outputFile)

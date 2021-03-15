@@ -24,6 +24,8 @@ class PupilDetector(private val config: PupilDetectorConfig) : PointDetector {
     var sessionFileManager: SessionFileManager? = null
 
     override fun detect() {
+        sessionFileManager?.addLog("PupilDetector - detection started")
+
         if (processingImage == null) {
             throw EyeTrackerNotPreparedException("processingImage not set")
         }
@@ -32,30 +34,45 @@ class PupilDetector(private val config: PupilDetectorConfig) : PointDetector {
 
         if (config.shouldEqualizeHistogram) {
             Imgproc.equalizeHist(processingImage, processingImage)
-            sessionFileManager?.saveMat(processingImage, "eye_pupil_equalize_hist")
+            sessionFileManager?.addLog("PupilDetector - equalize hist done")
+
+            sessionFileManager?.saveMat(processingImage, "eye_pupil_equalize_hist", true)
+            sessionFileManager?.addLog("PupilDetector - equalize hist saved", true)
         }
 
         Imgproc.threshold(
                 processingImage, processingImage,
                 config.threshold.toDouble(), config.maxThreshold.toDouble(),
                 Imgproc.THRESH_BINARY_INV)
-        sessionFileManager?.saveMat(processingImage, "eye_pupil_threshold")
+        sessionFileManager?.addLog("PupilDetector - threshold done")
+
+        sessionFileManager?.saveMat(processingImage, "eye_pupil_threshold", true)
+        sessionFileManager?.addLog("PupilDetector - threshold saved", true)
 
         if (config.isErosionEnabled) {
             Imgproc.erode(
                     processingImage, processingImage,
                     erosionKernel, erosionAnchor, config.erosionIterationsCount)
-            sessionFileManager?.saveMat(processingImage, "eye_pupil_erode")
+            sessionFileManager?.addLog("PupilDetector - erode done")
+
+            sessionFileManager?.saveMat(processingImage, "eye_pupil_erode", true)
+            sessionFileManager?.addLog("PupilDetector - erode saved", true)
         }
 
         if (config.isDilationEnabled) {
             Imgproc.dilate(
                     processingImage, processingImage,
                     dilationKernel, dilationAnchor, config.dilationIterationsCount)
-            sessionFileManager?.saveMat(processingImage, "eye_pupil_dilate")
+            sessionFileManager?.addLog("PupilDetector - dilate done")
+
+            sessionFileManager?.saveMat(processingImage, "eye_pupil_dilate", true)
+            sessionFileManager?.addLog("PupilDetector - dilate saved", true)
         }
 
         mutableDetectedPoint = getMassCenter8UC1(processingImage)
+        sessionFileManager?.addLog("PupilDetector - center of mass done")
+
+        sessionFileManager?.addLog("PupilDetector - detection done")
     }
 
     override fun clear() {

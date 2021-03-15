@@ -22,6 +22,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
 
 
     fun detect() {
+        sessionFileManager?.addLog("EyeTracker - detection started")
+
         val exceptionReason = isDetectionAvailable()
         if (exceptionReason != null) {
             throw EyeTrackerNotPreparedException(exceptionReason)
@@ -32,35 +34,53 @@ class EyeTracker(private val config: EyeTrackerConfig) {
         val eyeDetector = this.eyeDetector!!
         val eyeProcessor = this.eyeProcessor!!
 
-        sessionFileManager?.saveMat(sourceImage, "source_image")
+        sessionFileManager?.saveMat(sourceImage, "source_image", true)
+        sessionFileManager?.addLog("EyeTracker - source image saved", true)
 
         Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY, 1)
-        sessionFileManager?.saveMat(processingImage, "gray_image")
+        sessionFileManager?.addLog("EyeTracker - RGB to GRAY done")
+
+        sessionFileManager?.saveMat(processingImage, "gray_image", true)
+        sessionFileManager?.addLog("EyeTracker - gray image saved", true)
 
         Imgproc.equalizeHist(processingImage, processingImage)
-        sessionFileManager?.saveMat(processingImage, "hist_equalized_image")
+        sessionFileManager?.addLog("EyeTracker - image histogram equalized")
+
+        sessionFileManager?.saveMat(processingImage, "hist_equalized_image", true)
+        sessionFileManager?.addLog("EyeTracker - histogram equalized image saved", true)
 
         faceDetector.processingImage = processingImage
         faceDetector.detect()
+        sessionFileManager?.addLog("EyeTracker - face detection done")
+
         val faceRects = faceDetector.detectedRects
         for (faceIndex in faceRects.indices) {
             val faceRect = faceRects[faceIndex]
             val sourceFaceRoi = sourceImage.submat(faceRect)
             val processingFaceRoi = processingImage.submat(faceRect)
-            sessionFileManager?.saveMat(processingFaceRoi, "detected_face_$faceIndex")
+            sessionFileManager?.addLog("EyeTracker - face submats taken")
+
+            sessionFileManager?.saveMat(processingFaceRoi, "detected_face_$faceIndex", true)
+            sessionFileManager?.addLog("EyeTracker - detected face saved ($faceIndex)", true)
 
             eyeDetector.processingImage = processingFaceRoi
             eyeDetector.detect()
+            sessionFileManager?.addLog("EyeTracker - eye detection done")
+
             val eyeRects = eyeDetector.detectedRects
             for (eyeIndex in eyeRects.indices) {
                 val eyeRect = eyeRects[eyeIndex]
                 val sourceEyeRoi = sourceFaceRoi.submat(eyeRect)
                 val processingEyeRoi = processingFaceRoi.submat(eyeRect)
-                sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_${faceIndex}_${eyeIndex}")
+                sessionFileManager?.addLog("EyeTracker - eye submats taken")
+
+                sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_${faceIndex}_${eyeIndex}", true)
+                sessionFileManager?.addLog("EyeTracker - detected eye saved ($faceIndex) ($eyeIndex)", true)
 
 
                 eyeProcessor.sourceImage = sourceEyeRoi
                 eyeProcessor.process()
+                sessionFileManager?.addLog("EyeTracker - eye processed")
 
 
                 if (config.drawDebugMarkers) {
@@ -81,6 +101,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
                     Imgproc.drawMarker(
                             sourceEyeRoi, eyeProcessor.detectedPupilCenter, pupilCenterColor,
                             Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
+
+                    sessionFileManager?.addLog("EyeTracker - debug markers drawn")
                 }
 
 
@@ -88,6 +110,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
 //                System.gc()
             }
         }
+
+        sessionFileManager?.addLog("EyeTracker - detection done")
     }
 
 
