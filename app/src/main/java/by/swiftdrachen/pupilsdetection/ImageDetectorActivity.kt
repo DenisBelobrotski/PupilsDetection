@@ -18,7 +18,8 @@ class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
-    private val sessionFileManager by lazy { SessionFileManager(this) }
+    private val sessionFileManager: SessionFileManager? by lazy { SessionFileManager(this) }
+//    private val sessionFileManager: SessionFileManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,18 +93,14 @@ class ImageDetectorActivity : AppCompatActivity() {
         eyePreciser.sessionFileManager = sessionFileManager
         pupilDetector.sessionFileManager = sessionFileManager
 
-        val logger = SimpleLogger()
 
-        logger.addLog("Detection started")
+        sessionFileManager?.addLog("Detection started")
         eyeTracker.detect()
-        logger.addLog("Detection done")
+        sessionFileManager?.addLog("Detection done")
 
-        sessionFileManager.saveMat(chosenMat, "result")
-
-        logger.addLog("Result saving done")
-
-        val logResult = logger.flushLogs()
-        // TODO: save to log file
+        sessionFileManager?.saveMat(chosenMat, "result")
+        sessionFileManager?.addLog("Result saving done")
+        sessionFileManager?.saveLogFile("tracker")
 
         faceDetector.clear()
         eyeDetector.clear()

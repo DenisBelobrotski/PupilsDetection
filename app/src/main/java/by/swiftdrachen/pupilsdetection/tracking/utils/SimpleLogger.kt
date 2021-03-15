@@ -1,6 +1,5 @@
 package by.swiftdrachen.pupilsdetection.tracking.utils
 
-import by.swiftdrachen.pupilsdetection.BuildConfig
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -8,7 +7,7 @@ import java.time.format.DateTimeFormatter
 class SimpleLogger {
     class Log(val time: LocalDateTime, val message: String) {}
 
-    val isEnabled = BuildConfig.DEBUG
+    var isEnabled = true
 
     val logs = arrayListOf<Log>()
 

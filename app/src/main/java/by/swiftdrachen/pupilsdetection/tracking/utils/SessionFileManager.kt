@@ -15,6 +15,7 @@ class SessionFileManager(private val context: Context) {
         private const val FileNameDateFormat = "yyyy-MM-dd_HH:mm:ss:SSS"
         private const val FolderNameBase = "session"
         private const val ImageExtension = "png"
+        private const val LogExtension = "log"
         private const val BitmapCompressQuality = 100
 
         private val BitmapCompressFormat = Bitmap.CompressFormat.PNG
@@ -25,6 +26,7 @@ class SessionFileManager(private val context: Context) {
     private val fileNameDateFormatter = SimpleDateFormat(FileNameDateFormat)
     private var folderName = "${FolderNameBase}_${currentFormattedDate}"
     private val sessionFilesDirectory: File
+    private val logger = SimpleLogger()
 
 
     private val currentFormattedDate: String
@@ -72,6 +74,26 @@ class SessionFileManager(private val context: Context) {
         file.createNewFile()
 
         return file
+    }
+
+
+    fun addLog(message: String) {
+        logger.addLog(message)
+    }
+
+
+    fun saveLogFile(fileNameBase: String) {
+        if (!logger.isEnabled) {
+            return
+        }
+
+        val logString = logger.flushLogs()
+
+        val outputFile = createFile(fileNameBase, LogExtension)
+        val outputStream = FileOutputStream(outputFile)
+        outputStream.use {
+            outputStream.write(logString.toByteArray())
+        }
     }
 
 
