@@ -71,7 +71,7 @@ class SimpleLogger {
         stringBuilder
             .append(deltaName)
             .append(" - ")
-            .append("$minutes:$seconds:$millis")
+            .append("%02d:%02d:%03d".format(minutes, seconds, millis))
             .append("\n")
     }
 }

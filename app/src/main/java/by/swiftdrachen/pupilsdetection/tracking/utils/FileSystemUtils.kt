@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.utils
+package by.swiftdrachen.pupilsdetection.tracking.utils
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -6,6 +6,6 @@ class PupilDetectorConfig {
     val maxThreshold = 255
     val erosionIterationsCount = 2
     val dilationIterationsCount = 4
-    val isErosionEnabled = true
-    val isDilationEnabled = true
+    val isErosionEnabled = false
+    val isDilationEnabled = false
 }
