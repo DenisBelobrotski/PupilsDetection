@@ -1,6 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.configs
 
-class FaceCascadeClassifierConfig : CascadeClassifierConfig {
+class FaceCascadeClassifierConfig : ICascadeClassifierConfig {
     override val scaleFactor: Double
         get() = 1.3
 

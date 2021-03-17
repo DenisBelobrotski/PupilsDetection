@@ -1,6 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.detectors
 
-import by.swiftdrachen.pupilsdetection.tracking.configs.CascadeClassifierConfig
+import by.swiftdrachen.pupilsdetection.tracking.configs.ICascadeClassifierConfig
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.DetectorNotPreparedException
 import org.opencv.core.Mat
 import org.opencv.core.MatOfRect
@@ -9,7 +9,7 @@ import org.opencv.objdetect.CascadeClassifier
 
 class CascadeClassifierDetector(
         private val cascadeClassifier: CascadeClassifier,
-        private val config: CascadeClassifierConfig) : IRectDetector {
+        private val config: ICascadeClassifierConfig) : IRectDetector {
     private val mutableDetectedRects: MutableList<Rect> = mutableListOf()
 
     override var processingImage: Mat? = null

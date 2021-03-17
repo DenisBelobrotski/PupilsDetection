@@ -1,6 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.configs
 
-interface CascadeClassifierConfig {
+interface ICascadeClassifierConfig {
     val scaleFactor: Double
     val minNeighbours: Int
     val flags: Int
