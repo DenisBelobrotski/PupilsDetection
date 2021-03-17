@@ -1,11 +1,11 @@
 package by.swiftdrachen.pupilsdetection.tracking.algorithm
 
-import by.swiftdrachen.pupilsdetection.tracking.configs.EyeTrackerConfig
-import by.swiftdrachen.pupilsdetection.tracking.cv_utils.DrawUtils
-import by.swiftdrachen.pupilsdetection.tracking.cv_utils.OpenCvUtils
-import by.swiftdrachen.pupilsdetection.tracking.detectors.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.detectors.IRectDetector
-import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
+import by.swiftdrachen.pupilsdetection.tracking.config.EyeTrackerConfig
+import by.swiftdrachen.pupilsdetection.tracking.cv_util.DrawUtils
+import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
+import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
+import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
 import org.opencv.core.Scalar

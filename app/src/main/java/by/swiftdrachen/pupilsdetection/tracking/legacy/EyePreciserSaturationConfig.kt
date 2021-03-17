@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.tracking.configs
+package by.swiftdrachen.pupilsdetection.tracking.legacy
 
 class EyePreciserSaturationConfig {
     val shouldEqualizeHistogram = true

@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.tracking.configs
+package by.swiftdrachen.pupilsdetection.tracking.config
 
 class PupilDetectorConfig {
     val shouldEqualizeHistogram = true

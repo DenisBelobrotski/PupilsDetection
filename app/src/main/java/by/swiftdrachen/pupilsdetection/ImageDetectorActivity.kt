@@ -6,12 +6,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
-import by.swiftdrachen.pupilsdetection.tracking.configs.*
-import by.swiftdrachen.pupilsdetection.tracking.cv_utils.OpenCvUtils
-import by.swiftdrachen.pupilsdetection.tracking.detectors.*
-import by.swiftdrachen.pupilsdetection.tracking.exceptions.CascadeClassifierNotLoadedException
+import by.swiftdrachen.pupilsdetection.tracking.config.*
+import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
+import by.swiftdrachen.pupilsdetection.tracking.detector.*
+import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
-import by.swiftdrachen.pupilsdetection.tracking.utils.SimpleLogger
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 
 class ImageDetectorActivity : AppCompatActivity() {

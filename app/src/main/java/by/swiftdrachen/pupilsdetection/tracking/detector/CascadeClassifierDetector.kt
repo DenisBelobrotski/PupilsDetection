@@ -1,7 +1,8 @@
-package by.swiftdrachen.pupilsdetection.tracking.detectors
+package by.swiftdrachen.pupilsdetection.tracking.detector
 
-import by.swiftdrachen.pupilsdetection.tracking.configs.ICascadeClassifierConfig
-import by.swiftdrachen.pupilsdetection.tracking.exceptions.DetectorNotPreparedException
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.ICascadeClassifierConfig
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
+import by.swiftdrachen.pupilsdetection.tracking.exception.DetectorNotPreparedException
 import org.opencv.core.Mat
 import org.opencv.core.MatOfRect
 import org.opencv.core.Rect

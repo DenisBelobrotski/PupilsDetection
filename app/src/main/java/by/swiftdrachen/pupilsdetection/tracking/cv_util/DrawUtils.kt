@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.tracking.cv_utils
+package by.swiftdrachen.pupilsdetection.tracking.cv_util
 
 import org.opencv.core.Mat
 import kotlin.math.max

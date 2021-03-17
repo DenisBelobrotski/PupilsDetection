@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.tracking.detectors
+package by.swiftdrachen.pupilsdetection.tracking.abstraction
 
 import org.opencv.core.Mat
 import org.opencv.core.Rect

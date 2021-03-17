@@ -1,9 +1,10 @@
-package by.swiftdrachen.pupilsdetection.tracking.detectors
+package by.swiftdrachen.pupilsdetection.tracking.detector
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 
-class FaceCascadeClassifierDetector(
+class EyeCascadeClassifierDetector(
         private val cascadeClassifierDetector: CascadeClassifierDetector) : IRectDetector {
     override var processingImage: Mat?
         get() = cascadeClassifierDetector.processingImage

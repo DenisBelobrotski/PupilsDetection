@@ -1,6 +1,8 @@
-package by.swiftdrachen.pupilsdetection.tracking.configs
+package by.swiftdrachen.pupilsdetection.tracking.config
 
-class FaceCascadeClassifierConfig : ICascadeClassifierConfig {
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.ICascadeClassifierConfig
+
+class EyeCascadeClassifierConfig : ICascadeClassifierConfig {
     override val scaleFactor: Double
         get() = 1.3
 

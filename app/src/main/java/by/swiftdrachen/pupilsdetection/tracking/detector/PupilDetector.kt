@@ -1,7 +1,8 @@
-package by.swiftdrachen.pupilsdetection.tracking.detectors
+package by.swiftdrachen.pupilsdetection.tracking.detector
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.PointDetector
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.getMassCenter8UC1
-import by.swiftdrachen.pupilsdetection.tracking.configs.PupilDetectorConfig
+import by.swiftdrachen.pupilsdetection.tracking.config.PupilDetectorConfig
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
