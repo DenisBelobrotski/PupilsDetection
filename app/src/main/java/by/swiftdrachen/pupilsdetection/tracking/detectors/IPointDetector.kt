@@ -3,7 +3,7 @@ package by.swiftdrachen.pupilsdetection.tracking.detectors
 import org.opencv.core.Mat
 import org.opencv.core.Point
 
-interface PointDetector {
+interface IPointDetector {
     var processingImage: Mat?
     val detectedPoint: Point
 

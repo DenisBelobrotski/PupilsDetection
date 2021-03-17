@@ -4,7 +4,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Rect
 
 class EyeCascadeClassifierDetector(
-        private val cascadeClassifierDetector: CascadeClassifierDetector) : RectDetector {
+        private val cascadeClassifierDetector: CascadeClassifierDetector) : IRectDetector {
     override var processingImage: Mat?
         get() = cascadeClassifierDetector.processingImage
         set(value) { cascadeClassifierDetector.processingImage = value }

@@ -8,7 +8,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class EyePreciserHue(private val config: EyePreciserHueConfig) : PointDetector {
+class EyePreciserHue(private val config: EyePreciserHueConfig) : IPointDetector {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()

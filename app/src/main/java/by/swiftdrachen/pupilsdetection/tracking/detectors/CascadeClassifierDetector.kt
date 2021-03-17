@@ -9,7 +9,7 @@ import org.opencv.objdetect.CascadeClassifier
 
 class CascadeClassifierDetector(
         private val cascadeClassifier: CascadeClassifier,
-        private val config: CascadeClassifierConfig) : RectDetector {
+        private val config: CascadeClassifierConfig) : IRectDetector {
     private val mutableDetectedRects: MutableList<Rect> = mutableListOf()
 
     override var processingImage: Mat? = null

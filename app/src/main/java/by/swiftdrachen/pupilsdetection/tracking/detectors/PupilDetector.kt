@@ -8,7 +8,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class PupilDetector(private val config: PupilDetectorConfig) : PointDetector {
+class PupilDetector(private val config: PupilDetectorConfig) : IPointDetector {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()

@@ -11,8 +11,8 @@ import org.opencv.imgproc.Imgproc
 
 class EyeProcessor(
         private val config: EyeProcessorConfig,
-        private val eyePreciser: PointDetector,
-        private val pupilDetector: PointDetector) {
+        private val eyePreciser: IPointDetector,
+        private val pupilDetector: IPointDetector) {
 
     private val processingImage = Mat()
 

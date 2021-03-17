@@ -4,7 +4,7 @@ import by.swiftdrachen.pupilsdetection.tracking.configs.EyeTrackerConfig
 import by.swiftdrachen.pupilsdetection.tracking.cv_utils.DrawUtils
 import by.swiftdrachen.pupilsdetection.tracking.cv_utils.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detectors.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.detectors.RectDetector
+import by.swiftdrachen.pupilsdetection.tracking.detectors.IRectDetector
 import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
@@ -15,8 +15,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
     private val processingImage = Mat()
 
     var sourceImage: Mat? = null
-    var faceDetector: RectDetector? = null
-    var eyeDetector: RectDetector? = null
+    var faceDetector: IRectDetector? = null
+    var eyeDetector: IRectDetector? = null
     var eyeProcessor: EyeProcessor? = null
     var sessionFileManager: SessionFileManager? = null
 

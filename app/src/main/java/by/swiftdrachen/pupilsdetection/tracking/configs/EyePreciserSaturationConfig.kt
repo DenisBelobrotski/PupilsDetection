@@ -6,6 +6,6 @@ class EyePreciserSaturationConfig {
     val maxThreshold = 255
     val erosionIterationsCount = 1
     val dilationIterationsCount = 4
-    val isErosionEnabled = false
-    val isDilationEnabled = false
+    val isErosionEnabled = true
+    val isDilationEnabled = true
 }
