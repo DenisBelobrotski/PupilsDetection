@@ -2,35 +2,18 @@ package by.swiftdrachen.pupilsdetection.tracking.detectors
 
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.getMassCenter8UC1
 import by.swiftdrachen.pupilsdetection.tracking.configs.PupilDetectorConfig
-import by.swiftdrachen.pupilsdetection.tracking.exceptions.EyeTrackerNotPreparedException
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class PupilDetector(private val config: PupilDetectorConfig) : IPointDetector {
+class PupilDetector(private val config: PupilDetectorConfig) : PointDetector() {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()
     private val dilationAnchor = Point(-1.0, -1.0)
 
-    private var mutableDetectedPoint = Point()
-
-    override var processingImage: Mat? = null
-
-    override val detectedPoint: Point
-        get() = mutableDetectedPoint
-
-    var sessionFileManager: SessionFileManager? = null
-
-    override fun detect() {
+    override fun getDetectedPoint(processingImage: Mat): Point {
         sessionFileManager?.addLog("PupilDetector - detection started")
-
-        if (processingImage == null) {
-            throw EyeTrackerNotPreparedException("processingImage not set")
-        }
-
-        val processingImage = this.processingImage!!
 
         if (config.shouldEqualizeHistogram) {
             Imgproc.equalizeHist(processingImage, processingImage)
@@ -69,13 +52,17 @@ class PupilDetector(private val config: PupilDetectorConfig) : IPointDetector {
             sessionFileManager?.addLog("PupilDetector - dilate saved", true)
         }
 
-        mutableDetectedPoint = getMassCenter8UC1(processingImage)
+        val center = getMassCenter8UC1(processingImage)
         sessionFileManager?.addLog("PupilDetector - center of mass done")
 
         sessionFileManager?.addLog("PupilDetector - detection done")
+
+        return center
     }
 
     override fun clear() {
+        super.clear()
+
         erosionKernel.release()
         dilationKernel.release()
     }

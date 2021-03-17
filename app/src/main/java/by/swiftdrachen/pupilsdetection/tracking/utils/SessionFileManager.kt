@@ -35,8 +35,8 @@ class SessionFileManager(private val context: Context) {
         get() = context.getExternalFilesDir(null)
 
 
-    var isDebugImageSavingEnabled = true
-    var isDebugLogSavingEnabled = true
+    var isDebugImageSavingEnabled = false
+    var isDebugLogSavingEnabled = false
 
 
     init {

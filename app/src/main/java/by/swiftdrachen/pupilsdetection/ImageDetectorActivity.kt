@@ -35,8 +35,8 @@ class ImageDetectorActivity : AppCompatActivity() {
         }
 
         sessionFileManager = SessionFileManager(this)
-        sessionFileManager?.isDebugImageSavingEnabled = true
-        sessionFileManager?.isDebugLogSavingEnabled = true
+//        sessionFileManager?.isDebugImageSavingEnabled = true
+//        sessionFileManager?.isDebugLogSavingEnabled = true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
