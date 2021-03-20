@@ -2,6 +2,7 @@ package by.swiftdrachen.pupilsdetection.tracking.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import java.io.File
@@ -16,10 +17,6 @@ class SessionFileManager(private val context: Context) {
         private const val FolderNameBase = "session"
         private const val ImageExtension = "png"
         private const val LogExtension = "log"
-        private const val BitmapCompressQuality = 100
-
-        private val BitmapCompressFormat = Bitmap.CompressFormat.PNG
-        private val BitmapConfig = Bitmap.Config.ARGB_8888
     }
 
 
@@ -55,8 +52,7 @@ class SessionFileManager(private val context: Context) {
             return
         }
 
-        val bitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), BitmapConfig)
-        Utils.matToBitmap(mat, bitmap)
+        val bitmap = OpenCvUtils.getBitmapFromMat(mat)
         saveBitmap(bitmap, fileNameBase)
         bitmap.recycle()
     }
@@ -69,9 +65,7 @@ class SessionFileManager(private val context: Context) {
 
         val outputFile = createFile(fileNameBase, ImageExtension)
         val outputStream = FileOutputStream(outputFile)
-        outputStream.use {
-            bitmap.compress(BitmapCompressFormat, BitmapCompressQuality, outputStream)
-        }
+        FileSystemUtils.saveBitmap(bitmap, outputStream)
     }
 
 

@@ -3,6 +3,7 @@ package by.swiftdrachen.pupilsdetection
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
@@ -15,6 +16,8 @@ import by.swiftdrachen.pupilsdetection.utils.FileChooser
 
 class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
+    private val resultImageView by lazy { findViewById<ImageView>(R.id.result_image_view) }
+    private val newSessionButton by lazy { findViewById<Button>(R.id.new_session_button) }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
 
@@ -24,6 +27,10 @@ class ImageDetectorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_image_detector)
+
+        newSessionButton.setOnClickListener {
+            sessionFileManager = SessionFileManager(this)
+        }
 
         chooseImageButton.setOnClickListener {
             imageFileChooser.choose()
@@ -108,6 +115,11 @@ class ImageDetectorActivity : AppCompatActivity() {
         sessionFileManager?.saveMat(chosenMat, "result")
         sessionFileManager?.addLog("ImageDetectorActivity - result saving done")
         sessionFileManager?.saveLogFile("tracking_output_time")
+
+        eyeTracker.sourceImage?.let {
+            val resultBitmap = OpenCvUtils.getBitmapFromMat(it)
+            resultImageView.setImageBitmap(resultBitmap)
+        }
 
         faceDetector.clear()
         eyeDetector.clear()

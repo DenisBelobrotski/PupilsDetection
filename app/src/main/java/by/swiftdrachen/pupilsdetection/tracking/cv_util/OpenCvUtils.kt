@@ -1,6 +1,7 @@
 package by.swiftdrachen.pupilsdetection.tracking.cv_util
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import by.swiftdrachen.pupilsdetection.tracking.utils.FileSystemUtils
 import org.opencv.android.Utils
@@ -51,6 +52,7 @@ class OpenCvUtils {
             val resultBitmap =
                 FileSystemUtils.loadUserBitmap(context, uri)
             resultBitmap?.let {
+                // TODO: estimate bitmapToMat time
                 resultMat = Mat()
                 Utils.bitmapToMat(resultBitmap, resultMat)
             }
@@ -64,6 +66,13 @@ class OpenCvUtils {
 
         fun getMatCenter(mat: Mat): Point {
             return Point((mat.cols() / 2).toDouble(), (mat.rows() / 2).toDouble())
+        }
+
+        fun getBitmapFromMat(mat: Mat, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
+            val bitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), config)
+            Utils.matToBitmap(mat, bitmap)
+
+            return bitmap
         }
     }
 }

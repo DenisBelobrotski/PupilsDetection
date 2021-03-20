@@ -6,24 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ImageDetectorActivity">
 
+    <ImageView
+        android:id="@+id/result_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="480dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/new_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/new_session"
+        app:layout_constraintBottom_toTopOf="@id/choose_image_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <Button
         android:id="@+id/choose_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:text="@string/choose_image"
         app:layout_constraintBottom_toTopOf="@id/process_image_button"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="50dp"
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/process_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:text="@string/process_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="100dp"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

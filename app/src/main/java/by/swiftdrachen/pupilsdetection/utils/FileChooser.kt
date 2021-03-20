@@ -22,7 +22,7 @@ class FileChooser(
         get() = lastChosenFileUriMutable
 
     fun choose() {
-        val chooserTip = targetActivity.resources.getString(R.string.choose_video_tip)
+        val chooserTip = targetActivity.resources.getString(R.string.choose_file_tip)
 
         var chooserIntent = Intent(Intent.ACTION_GET_CONTENT)
         chooserIntent.type = "${baseMimeType}/${concreteMimeType}"

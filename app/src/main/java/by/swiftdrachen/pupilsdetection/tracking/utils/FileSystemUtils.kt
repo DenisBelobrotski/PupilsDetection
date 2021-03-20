@@ -8,6 +8,7 @@ import android.provider.OpenableColumns
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 
 class FileSystemUtils {
     companion object {
@@ -116,13 +117,24 @@ class FileSystemUtils {
                     throw IllegalArgumentException("Can't obtain file name, cursor is empty")
                 }
                 cursor.moveToFirst()
-                val fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+                val fileName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
                 cursor.close()
 
                 return fileName
             }
 
             return null
+        }
+
+        fun saveBitmap(
+                bitmap: Bitmap,
+                outputStream: OutputStream,
+                format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+                quality: Int = 100) {
+            outputStream.use {
+                bitmap.compress(format, quality, outputStream)
+            }
         }
     }
 }
