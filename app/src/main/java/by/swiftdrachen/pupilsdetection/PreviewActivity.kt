@@ -50,6 +50,7 @@ class PreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
+
         if (!checkCameraPermission()) {
             ActivityCompat.requestPermissions(
                     this, arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_CAMERA)
