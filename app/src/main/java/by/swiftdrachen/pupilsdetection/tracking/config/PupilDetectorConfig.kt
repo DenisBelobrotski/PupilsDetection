@@ -1,11 +1,11 @@
 package by.swiftdrachen.pupilsdetection.tracking.config
 
 class PupilDetectorConfig {
-    val shouldEqualizeHistogram = true
-    val threshold = 10
-    val maxThreshold = 255
-    val erosionIterationsCount = 2
-    val dilationIterationsCount = 4
-    val isErosionEnabled = false
-    val isDilationEnabled = false
+    var shouldEqualizeHistogram = true
+    var threshold = 10
+    var maxThreshold = 255
+    var erosionIterationsCount = 2
+    var dilationIterationsCount = 4
+    var isErosionEnabled = false
+    var isDilationEnabled = false
 }

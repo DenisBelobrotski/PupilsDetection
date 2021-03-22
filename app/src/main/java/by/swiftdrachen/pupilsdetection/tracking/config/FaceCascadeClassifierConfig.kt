@@ -3,6 +3,9 @@ package by.swiftdrachen.pupilsdetection.tracking.config
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.ICascadeClassifierConfig
 
 class FaceCascadeClassifierConfig : ICascadeClassifierConfig {
+    override val assetPath: String
+        get() = "cascades/haarcascade_frontalface_alt2.xml"
+
     override val scaleFactor: Double
         get() = 1.3
 

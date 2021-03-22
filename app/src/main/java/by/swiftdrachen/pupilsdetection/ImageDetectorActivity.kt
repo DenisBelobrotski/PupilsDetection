@@ -66,17 +66,17 @@ class ImageDetectorActivity : AppCompatActivity() {
             return
         }
 
-        val faceCascade =
-            OpenCvUtils.loadCascadeFromAssets(this, FACE_CASCADE_PATH)
-                ?: throw CascadeClassifierNotLoadedException(FACE_CASCADE_PATH)
         val faceDetectorConfig = FaceCascadeClassifierConfig()
+        val faceCascade =
+            OpenCvUtils.loadCascadeFromAssets(this, faceDetectorConfig.assetPath)
+                ?: throw CascadeClassifierNotLoadedException(faceDetectorConfig.assetPath)
         val faceCascadeClassifierDetector =
             CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
-        val eyeCascade =
-            OpenCvUtils.loadCascadeFromAssets(this, EYE_CASCADE_PATH)
-                ?: throw CascadeClassifierNotLoadedException(EYE_CASCADE_PATH)
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
+        val eyeCascade =
+            OpenCvUtils.loadCascadeFromAssets(this, eyeDetectorConfig.assetPath)
+                ?: throw CascadeClassifierNotLoadedException(eyeDetectorConfig.assetPath)
         val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
         val eyeProcessorConfig = EyeProcessorConfig()

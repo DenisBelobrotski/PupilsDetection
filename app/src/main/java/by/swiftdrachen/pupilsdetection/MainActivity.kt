@@ -3,7 +3,6 @@ package by.swiftdrachen.pupilsdetection
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 
@@ -24,7 +23,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         cameraDetectorButton.setOnClickListener {
-            Toast.makeText(this, "Camera detector is not implemented yet.", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, PreviewActivity::class.java)
+            startActivity(intent)
         }
     }
 }

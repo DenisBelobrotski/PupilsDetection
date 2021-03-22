@@ -1,13 +1,14 @@
 package by.swiftdrachen.pupilsdetection.tracking.algorithm
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
 import by.swiftdrachen.pupilsdetection.tracking.config.EyeTrackerConfig
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.DrawUtils
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
 import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Mat
+import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
@@ -67,6 +68,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
             eyeDetector.detect()
             sessionFileManager?.addLog("EyeTracker - eye detection done")
 
+            tryDrawFaceRect(sourceImage, faceRect)
+
             val eyeRects = eyeDetector.detectedRects
             for (eyeIndex in eyeRects.indices) {
                 val eyeRect = eyeRects[eyeIndex]
@@ -83,27 +86,8 @@ class EyeTracker(private val config: EyeTrackerConfig) {
                 sessionFileManager?.addLog("EyeTracker - eye processed")
 
 
-                if (config.drawDebugMarkers) {
-                    val roiCenterColor = Scalar(255.0, 255.0, 0.0, 255.0)
-                    val eyeCenterColor = Scalar(0.0, 255.0, 0.0, 255.0)
-                    val pupilCenterColor = Scalar(255.0, 0.0, 0.0, 255.0)
-                    val markerSize = DrawUtils.getMarkerSizeForMat(sourceEyeRoi, 20, 2)
-                    val thickness = DrawUtils.getLineThicknessForMat(sourceEyeRoi, 30, 1)
-                    val lineType = Imgproc.LINE_8
-                    val roiCenter = OpenCvUtils.getMatCenter(sourceEyeRoi)
-
-                    Imgproc.drawMarker(
-                            sourceEyeRoi, roiCenter, roiCenterColor,
-                            Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
-                    Imgproc.drawMarker(
-                            sourceEyeRoi, eyeProcessor.detectedEyeCenter, eyeCenterColor,
-                            Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
-                    Imgproc.drawMarker(
-                            sourceEyeRoi, eyeProcessor.detectedPupilCenter, pupilCenterColor,
-                            Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
-
-                    sessionFileManager?.addLog("EyeTracker - debug markers drawn")
-                }
+                tryDrawEyeRect(sourceFaceRoi, eyeRect)
+                tryDrawEyeMarkers(sourceEyeRoi, eyeProcessor)
 
 
                 // TODO: call every few frames (https://github.com/opencv/opencv/issues/4961)
@@ -133,6 +117,51 @@ class EyeTracker(private val config: EyeTrackerConfig) {
         }
 
         return null
+    }
+
+
+    private fun tryDrawFaceRect(sourceImage: Mat, faceRect: Rect) {
+        if (config.drawDebugFaceRects) {
+            val color = Scalar(0.0, 255.0, 0.0, 255.0)
+            val thickness = DrawUtils.getLineThicknessForMat(sourceImage, 100, 1)
+            val lineType = Imgproc.LINE_8
+            Imgproc.rectangle(sourceImage, faceRect, color, thickness, lineType)
+        }
+    }
+
+
+    private fun tryDrawEyeRect(sourceFaceRoi: Mat, eyeRect: Rect) {
+        if (config.drawDebugEyeRects) {
+            val color = Scalar(255.0, 0.0, 255.0, 255.0)
+            val thickness = DrawUtils.getLineThicknessForMat(sourceFaceRoi, 100, 1)
+            val lineType = Imgproc.LINE_8
+            Imgproc.rectangle(sourceFaceRoi, eyeRect, color, thickness, lineType)
+        }
+    }
+
+
+    private fun tryDrawEyeMarkers(sourceEyeRoi: Mat, eyeProcessor: EyeProcessor) {
+        if (config.drawDebugEyeMarkers) {
+            val roiCenterColor = Scalar(255.0, 255.0, 0.0, 255.0)
+            val eyeCenterColor = Scalar(0.0, 255.0, 0.0, 255.0)
+            val pupilCenterColor = Scalar(255.0, 0.0, 0.0, 255.0)
+            val markerSize = DrawUtils.getMarkerSizeForMat(sourceEyeRoi, 20, 2)
+            val thickness = DrawUtils.getLineThicknessForMat(sourceEyeRoi, 30, 1)
+            val lineType = Imgproc.LINE_8
+            val roiCenter = OpenCvUtils.getMatCenter(sourceEyeRoi)
+
+            Imgproc.drawMarker(
+                    sourceEyeRoi, roiCenter, roiCenterColor,
+                    Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
+            Imgproc.drawMarker(
+                    sourceEyeRoi, eyeProcessor.detectedEyeCenter, eyeCenterColor,
+                    Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
+            Imgproc.drawMarker(
+                    sourceEyeRoi, eyeProcessor.detectedPupilCenter, pupilCenterColor,
+                    Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
+
+            sessionFileManager?.addLog("EyeTracker - debug markers drawn")
+        }
     }
 
 

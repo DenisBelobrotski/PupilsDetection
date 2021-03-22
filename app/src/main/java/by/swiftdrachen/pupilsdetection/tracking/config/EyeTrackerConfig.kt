@@ -1,5 +1,7 @@
 package by.swiftdrachen.pupilsdetection.tracking.config
 
 class EyeTrackerConfig {
-    val drawDebugMarkers = true
+    var drawDebugFaceRects = true
+    var drawDebugEyeRects = true
+    var drawDebugEyeMarkers = true
 }

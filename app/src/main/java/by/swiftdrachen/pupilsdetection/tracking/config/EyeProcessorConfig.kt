@@ -1,6 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.config
 
 class EyeProcessorConfig {
-    val topOffsetPercentage: Int = 40
-    val bottomOffsetPercentage: Int = 0
+    var topOffsetPercentage: Int = 40
+    var bottomOffsetPercentage: Int = 0
 }
