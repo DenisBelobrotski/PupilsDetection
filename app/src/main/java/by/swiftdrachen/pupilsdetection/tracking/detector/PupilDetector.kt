@@ -1,13 +1,13 @@
 package by.swiftdrachen.pupilsdetection.tracking.detector
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IPupilDetectorConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.PointDetector
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.getMassCenter8UC1
-import by.swiftdrachen.pupilsdetection.tracking.config.PupilDetectorConfig
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.imgproc.Imgproc
 
-class PupilDetector(private val config: PupilDetectorConfig) : PointDetector() {
+class PupilDetector(private val config: IPupilDetectorConfig) : PointDetector() {
     private val erosionKernel = Mat()
     private val erosionAnchor = Point(-1.0, -1.0)
     private val dilationKernel = Mat()

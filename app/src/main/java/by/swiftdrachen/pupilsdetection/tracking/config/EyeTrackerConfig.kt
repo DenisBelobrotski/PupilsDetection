@@ -1,7 +1,9 @@
 package by.swiftdrachen.pupilsdetection.tracking.config
 
-class EyeTrackerConfig {
-    var drawDebugFaceRects = true
-    var drawDebugEyeRects = true
-    var drawDebugEyeMarkers = true
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeTrackerConfig
+
+class EyeTrackerConfig : IEyeTrackerConfig {
+    override var drawDebugFaceRects = true
+    override var drawDebugEyeRects = true
+    override var drawDebugEyeMarkers = true
 }

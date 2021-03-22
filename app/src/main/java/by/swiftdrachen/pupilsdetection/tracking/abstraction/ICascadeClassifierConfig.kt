@@ -1,10 +1,10 @@
 package by.swiftdrachen.pupilsdetection.tracking.abstraction
 
 interface ICascadeClassifierConfig {
-    val assetPath: String
-    val scaleFactor: Double
-    val minNeighbours: Int
-    val flags: Int
-    val minSizeRatio: Double
-    val maxSizeRatio: Double
+    var assetPath: String
+    var scaleFactor: Double
+    var minNeighbours: Int
+    var flags: Int
+    var minSizeRatio: Double
+    var maxSizeRatio: Double
 }

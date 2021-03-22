@@ -1,7 +1,7 @@
 package by.swiftdrachen.pupilsdetection.tracking.detector
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessorConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IPointDetector
-import by.swiftdrachen.pupilsdetection.tracking.config.EyeProcessorConfig
 import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import org.opencv.core.Core
@@ -11,7 +11,7 @@ import org.opencv.core.Range
 import org.opencv.imgproc.Imgproc
 
 class EyeProcessor(
-        private val config: EyeProcessorConfig,
+        private val config: IEyeProcessorConfig,
         private val eyePreciser: IPointDetector,
         private val pupilDetector: IPointDetector) {
 
