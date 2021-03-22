@@ -134,4 +134,9 @@ class EyeTracker(private val config: EyeTrackerConfig) {
 
         return null
     }
+
+
+    private fun getRelevantFace() {
+
+    }
 }

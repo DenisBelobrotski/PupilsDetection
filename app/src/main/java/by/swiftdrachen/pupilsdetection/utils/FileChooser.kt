@@ -15,8 +15,6 @@ class FileChooser(
     private val baseMimeType: String,
     private val concreteMimeType: String) {
 
-
-
     private val lastChosenFileUriMutable: MutableLiveData<Uri> by lazy { MutableLiveData<Uri>() }
     val lastChosenFileUri: LiveData<Uri>
         get() = lastChosenFileUriMutable

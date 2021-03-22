@@ -9,7 +9,7 @@ class SimpleLogger {
 
     var isEnabled = true
 
-    val logs = arrayListOf<Log>()
+    private val logs = arrayListOf<Log>()
 
     fun addLog(message: String) {
         if (!isEnabled) {
@@ -21,6 +21,7 @@ class SimpleLogger {
 
     fun flushLogs(): String {
         if (!isEnabled) {
+            logs.clear()
             return ""
         }
 

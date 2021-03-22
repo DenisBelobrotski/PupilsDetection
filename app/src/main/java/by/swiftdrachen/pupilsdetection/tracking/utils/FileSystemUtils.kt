@@ -14,8 +14,7 @@ class FileSystemUtils {
     companion object {
         fun loadBitmapResource(context: Context, assetPath: String): Bitmap {
             val assetInputStream = context.assets.open(assetPath)
-            val resultBitmap =
-                decodeBitmap(assetInputStream)
+            val resultBitmap = decodeBitmap(assetInputStream)
             assetInputStream.close()
 
             return resultBitmap
@@ -88,7 +87,9 @@ class FileSystemUtils {
             return cachedFile
         }
 
-        fun cacheUserFile(context: Context, userFileUri: Uri, rewrite: Boolean = false): File? {
+        fun cacheUserFile(
+                context: Context, userFileUri: Uri,
+                rewrite: Boolean = false, public: Boolean = false): File? {
             var cachedFile: File? = null
             val userFileName =
                 getUserFileName(context, userFileUri)
@@ -97,7 +98,7 @@ class FileSystemUtils {
 
             if (userFileName != null && userFileInputStream != null) {
                 cachedFile =
-                    writeCacheFile(context, userFileInputStream, userFileName, rewrite)
+                    writeCacheFile(context, userFileInputStream, userFileName, rewrite, public)
             }
 
             userFileInputStream?.close()
