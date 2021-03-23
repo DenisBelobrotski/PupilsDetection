@@ -85,22 +85,21 @@ class ImageDetectorActivity : AppCompatActivity() {
 
         val faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
         val eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
-        val eyePreciser = EyePreciserCenter()
-        val pupilDetector = PupilDetector(pupilDetectorConfig)
-        val eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser, pupilDetector)
 
-        val eyeTrackerConfig = EyeTrackerConfig()
+        val eyePreciser = EyePreciserCenter()
+        eyePreciser.sessionFileManager = sessionFileManager
+
+        val pupilDetector = PupilDetector(pupilDetectorConfig)
+        pupilDetector.sessionFileManager = sessionFileManager
+
+        val eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser, pupilDetector)
+        eyeProcessor.sessionFileManager = sessionFileManager
+
+        val eyeTrackerConfig = EyeTrackerConfig(faceDetector, eyeDetector, eyeProcessor)
+        eyeTrackerConfig.sessionFileManager = sessionFileManager
 
         val eyeTracker = EyeTracker(eyeTrackerConfig)
         eyeTracker.sourceImage = chosenMat
-        eyeTracker.faceDetector = faceDetector
-        eyeTracker.eyeDetector = eyeDetector
-        eyeTracker.eyeProcessor = eyeProcessor
-
-        eyeTracker.sessionFileManager = sessionFileManager
-        eyeProcessor.sessionFileManager = sessionFileManager
-        eyePreciser.sessionFileManager = sessionFileManager
-        pupilDetector.sessionFileManager = sessionFileManager
 
 
         val imageWidth = chosenMat.cols()

@@ -102,12 +102,9 @@ class PreviewActivity : AppCompatActivity() {
         pupilDetector = PupilDetector(pupilDetectorConfig)
         eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser!!, pupilDetector!!)
 
-        val eyeTrackerConfig = EyeTrackerConfig()
+        val eyeTrackerConfig = EyeTrackerConfig(faceDetector!!, eyeDetector!!, eyeProcessor!!)
 
         eyeTracker = EyeTracker(eyeTrackerConfig)
-        eyeTracker?.faceDetector = faceDetector
-        eyeTracker?.eyeDetector = eyeDetector
-        eyeTracker?.eyeProcessor = eyeProcessor
     }
 
 

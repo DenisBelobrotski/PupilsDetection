@@ -15,17 +15,21 @@ import org.opencv.imgproc.Imgproc
 
 class EyeTracker(private val config: IEyeTrackerConfig) {
     private val processingImage = Mat()
+
+    private val faceDetector: IRectDetector = config.faceDetector
+    private val eyeDetector: IRectDetector = config.eyeDetector
+    private val eyeProcessor: EyeProcessor = config.eyeProcessor
+    private val sessionFileManager: SessionFileManager? = config.sessionFileManager
+
     private var detectedFaceRect: Rect? = null
     private var detectedLeftEyeRect: Rect? = null
     private var detectedRightEyeRect: Rect? = null
+
     private var leftEyeGazeDirectionIndex: Int = DEFAULT_GAZE_DIRECTION_INDEX
     private var rightEyeGazeDirectionIndex: Int = DEFAULT_GAZE_DIRECTION_INDEX
 
+
     var sourceImage: Mat? = null
-    var faceDetector: IRectDetector? = null
-    var eyeDetector: IRectDetector? = null
-    var eyeProcessor: EyeProcessor? = null
-    var sessionFileManager: SessionFileManager? = null
 
     val lastDetectedFaceRect: Rect?
         get() = detectedFaceRect
@@ -39,15 +43,13 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     val rightEyeBestGazeDirectionIndex: Int
         get() = rightEyeGazeDirectionIndex
 
+
     fun detect() {
         sessionFileManager?.addLog("EyeTracker - detection started")
 
         checkAvailability()
 
         val sourceImage = this.sourceImage!!
-        val faceDetector = this.faceDetector!!
-        val eyeDetector = this.eyeDetector!!
-        val eyeProcessor = this.eyeProcessor!!
 
         sessionFileManager?.saveMat(sourceImage, "source_image", true)
         sessionFileManager?.addLog("EyeTracker - source image saved", true)
@@ -123,18 +125,6 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     private fun isDetectionAvailable(): String? {
         if (sourceImage == null) {
             return "Target image not set"
-        }
-
-        if (faceDetector == null) {
-            return "Face detector not set"
-        }
-
-        if (eyeDetector == null) {
-            return "Eye detector not set"
-        }
-
-        if (eyeProcessor == null) {
-            return "Eye preprocessor not set"
         }
 
         return null
