@@ -14,6 +14,7 @@ import org.opencv.imgproc.Imgproc
 
 class EyeTracker(private val config: IEyeTrackerConfig) {
     private val processingImage = Mat()
+    private var detectedFaceRect: Rect? = null
 
     var sourceImage: Mat? = null
     var faceDetector: IRectDetector? = null
@@ -21,6 +22,8 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     var eyeProcessor: EyeProcessor? = null
     var sessionFileManager: SessionFileManager? = null
 
+    val lastDetectedFaceRect: Rect?
+        get() = detectedFaceRect
 
     fun detect() {
         sessionFileManager?.addLog("EyeTracker - detection started")
@@ -55,20 +58,22 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
         sessionFileManager?.addLog("EyeTracker - face detection done")
 
         val faceRects = faceDetector.detectedRects
-        for (faceIndex in faceRects.indices) {
-            val faceRect = faceRects[faceIndex]
-            val sourceFaceRoi = sourceImage.submat(faceRect)
-            val processingFaceRoi = processingImage.submat(faceRect)
+
+        detectedFaceRect = getBestFace(faceRects)
+
+        detectedFaceRect?.let {
+            val sourceFaceRoi = sourceImage.submat(it)
+            val processingFaceRoi = processingImage.submat(it)
             sessionFileManager?.addLog("EyeTracker - face submats taken")
 
-            sessionFileManager?.saveMat(processingFaceRoi, "detected_face_$faceIndex", true)
-            sessionFileManager?.addLog("EyeTracker - detected face saved ($faceIndex)", true)
+            sessionFileManager?.saveMat(processingFaceRoi, "detected_face", true)
+            sessionFileManager?.addLog("EyeTracker - detected face saved", true)
 
             eyeDetector.processingImage = processingFaceRoi
             eyeDetector.detect()
             sessionFileManager?.addLog("EyeTracker - eye detection done")
 
-            tryDrawFaceRect(sourceImage, faceRect)
+            tryDrawFaceRect(sourceImage, it)
 
             val eyeRects = eyeDetector.detectedRects
             for (eyeIndex in eyeRects.indices) {
@@ -77,8 +82,8 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
                 val processingEyeRoi = processingFaceRoi.submat(eyeRect)
                 sessionFileManager?.addLog("EyeTracker - eye submats taken")
 
-                sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_${faceIndex}_${eyeIndex}", true)
-                sessionFileManager?.addLog("EyeTracker - detected eye saved ($faceIndex) ($eyeIndex)", true)
+                sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_${eyeIndex}", true)
+                sessionFileManager?.addLog("EyeTracker - detected eye saved ($eyeIndex)", true)
 
 
                 eyeProcessor.sourceImage = sourceEyeRoi
@@ -165,7 +170,26 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     }
 
 
-    private fun getRelevantFace() {
+    private fun getBestFace(detectedRects: List<Rect>): Rect? {
+        val rectsCount = detectedRects.count()
 
+        if (rectsCount == 0) {
+            return null
+        }
+
+        var relevantFaceRect = detectedRects[0]
+        var maxArea = relevantFaceRect.area()
+
+        for (index in 1 until rectsCount) {
+            val currentRect = detectedRects[index]
+            val currentArea = currentRect.area()
+
+            if (currentArea > maxArea) {
+                maxArea = currentArea
+                relevantFaceRect = currentRect
+            }
+        }
+
+        return relevantFaceRect
     }
 }
