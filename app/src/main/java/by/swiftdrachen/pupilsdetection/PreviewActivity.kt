@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.util.Rational
 import android.util.Size
 import android.view.Surface
@@ -25,18 +24,15 @@ import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
 import org.opencv.android.Utils
 import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc
 
 class PreviewActivity : AppCompatActivity() {
 
     private lateinit var preview: Preview
     private lateinit var imageAnalysis: ImageAnalysis
-    var currentImageType = Imgproc.COLOR_RGB2GRAY
     private val textureView by lazy { findViewById<TextureView>(R.id.previewView) }
     private val imageView by lazy { findViewById<ImageView>(R.id.image) }
 
 
-    //temp
     private var eyeTracker: EyeTracker? = null
     private var faceDetector: FaceCascadeClassifierDetector? = null
     private var eyeDetector: EyeCascadeClassifierDetector? = null
@@ -59,7 +55,30 @@ class PreviewActivity : AppCompatActivity() {
         }
 
 
-        /// temp
+        initEyeTracker()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        faceDetector?.clear()
+        eyeDetector?.clear()
+        eyePreciser?.clear()
+        pupilDetector?.clear()
+    }
+
+
+    private fun startCamera() {
+        CameraX.unbindAll()
+        startPreview()
+        startImageAnalysis()
+
+        CameraX.bindToLifecycle(this, preview, imageAnalysis);
+    }
+
+
+    private fun initEyeTracker() {
         val faceDetectorConfig = FaceCascadeClassifierConfig()
         val faceCascade =
             OpenCvUtils.loadCascadeFromAssets(this, faceDetectorConfig.assetPath)
@@ -91,26 +110,11 @@ class PreviewActivity : AppCompatActivity() {
         eyeTracker?.eyeProcessor = eyeProcessor
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        faceDetector?.clear()
-        eyeDetector?.clear()
-        eyePreciser?.clear()
-        pupilDetector?.clear()
-    }
-
-    private fun startCamera() {
-        CameraX.unbindAll();
-        startPreview()
-        startImageAnalysis()
-
-        CameraX.bindToLifecycle(this, preview, imageAnalysis);
-    }
 
     private fun startImageAnalysis(): ImageAnalysis? {
         val analyzerThread = HandlerThread("Analysis")
         analyzerThread.start()
+
         val imageAnalysisConfig =
             ImageAnalysisConfig.Builder()
                 .setLensFacing(CameraX.LensFacing.FRONT)
@@ -119,16 +123,13 @@ class PreviewActivity : AppCompatActivity() {
                 .setCallbackHandler(Handler(analyzerThread.looper))
                 .setImageQueueDepth(1)
                 .build()
+
         imageAnalysis = ImageAnalysis(imageAnalysisConfig)
         imageAnalysis.analyzer =
             ImageAnalysis.Analyzer { _, _ ->
                 val bitmap = textureView.bitmap ?: return@Analyzer
-//                val mat = Mat()
-                Log.d("LOOOG", "bit ${bitmap.height}x${bitmap.width}")
-                Utils.bitmapToMat(bitmap, tempMat)
-                Log.d("LOOOG", "${tempMat.cols()}x${tempMat.rows()}")
-//                Imgproc.cvtColor(mat, mat, currentImageType)
 
+                Utils.bitmapToMat(bitmap, tempMat)
 
                 eyeTracker?.sourceImage = tempMat
                 eyeTracker?.detect()
@@ -140,6 +141,7 @@ class PreviewActivity : AppCompatActivity() {
                     imageView.setImageBitmap(bitmap)
                 }
             }
+
         return imageAnalysis
     }
 
@@ -165,6 +167,7 @@ class PreviewActivity : AppCompatActivity() {
         }
     }
 
+
     private fun updateTransform() {
         val mx = Matrix()
         val w = textureView.measuredWidth.toFloat()
@@ -186,21 +189,23 @@ class PreviewActivity : AppCompatActivity() {
 
 
     override fun onRequestPermissionsResult(
-            requestCode: Int, permissions: Array<String>, grantResults:
-            IntArray) {
+            requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE_CAMERA) {
             if (checkCameraPermission()) {
                 startPreview()
             } else {
-                Toast.makeText(this, "Разрешите пользоваться камерой", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No camera access", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
     }
 
+
     private fun checkCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(baseContext, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(baseContext, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED
     }
+
 
     companion object {
         private const val REQUEST_CODE_CAMERA = 1000
