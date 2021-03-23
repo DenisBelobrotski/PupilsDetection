@@ -13,7 +13,7 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-class EyeTracker(private val config: IEyeTrackerConfig) {
+class EyeTracker(val config: IEyeTrackerConfig) {
     private val processingImage = Mat()
 
     private val faceDetector: IRectDetector = config.faceDetector

@@ -14,6 +14,7 @@ import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
+import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 
 class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
@@ -29,6 +30,7 @@ class ImageDetectorActivity : AppCompatActivity() {
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
 
     private var sessionFileManager: SessionFileManager? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +58,13 @@ class ImageDetectorActivity : AppCompatActivity() {
 //        sessionFileManager?.isDebugLogSavingEnabled = true
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         imageFileChooser.onActivityResult(requestCode, resultCode, data)
 
         super.onActivityResult(requestCode, resultCode, data)
     }
+
 
     private fun processImage() {
         val imageUri = imageFileChooser.lastChosenFileUri.value
@@ -132,9 +136,9 @@ class ImageDetectorActivity : AppCompatActivity() {
         }
 
 
-        updateEyeStatus(
+        ResultUtils.updateEyeStatus(
                 leftEyeStatusView, eyeTracker.leftEyeBestGazeDirectionIndex, eyeTrackerConfig)
-        updateEyeStatus(
+        ResultUtils.updateEyeStatus(
                 rightEyeStatusView, eyeTracker.rightEyeBestGazeDirectionIndex, eyeTrackerConfig)
 
 
@@ -144,15 +148,5 @@ class ImageDetectorActivity : AppCompatActivity() {
         pupilDetector.clear()
 
         Toast.makeText(this, "Detection done", Toast.LENGTH_LONG).show()
-    }
-}
-
-
-private fun updateEyeStatus(textView: TextView, directionIndex: Int, config: EyeTrackerConfig) {
-    textView.text = when {
-        directionIndex >= 0 -> config.gazeDirectionNames[directionIndex]
-        directionIndex == EyeTracker.CENTER_GAZE_DIRECTION_INDEX -> config.gazeDirectionCenterName
-        directionIndex == EyeTracker.DEFAULT_GAZE_DIRECTION_INDEX -> config.gazeDirectionNoResultName
-        else -> config.gazeDirectionNoResultName
     }
 }

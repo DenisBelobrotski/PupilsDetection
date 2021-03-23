@@ -12,6 +12,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -22,6 +23,7 @@ import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
+import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 
@@ -29,10 +31,15 @@ class PreviewActivity : AppCompatActivity() {
 
     private lateinit var preview: Preview
     private lateinit var imageAnalysis: ImageAnalysis
+
     private val textureView by lazy { findViewById<TextureView>(R.id.previewView) }
     private val imageView by lazy { findViewById<ImageView>(R.id.image) }
 
+    private val leftEyeStatusView by lazy { findViewById<TextView>(R.id.left_eye_direction_status) }
+    private val rightEyeStatusView by lazy { findViewById<TextView>(R.id.right_eye_direction_status) }
 
+
+    private var eyeTrackerConfig: EyeTrackerConfig? = null
     private var eyeTracker: EyeTracker? = null
     private var faceDetector: FaceCascadeClassifierDetector? = null
     private var eyeDetector: EyeCascadeClassifierDetector? = null
@@ -102,9 +109,9 @@ class PreviewActivity : AppCompatActivity() {
         pupilDetector = PupilDetector(pupilDetectorConfig)
         eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser!!, pupilDetector!!)
 
-        val eyeTrackerConfig = EyeTrackerConfig(faceDetector!!, eyeDetector!!, eyeProcessor!!)
+        eyeTrackerConfig = EyeTrackerConfig(faceDetector!!, eyeDetector!!, eyeProcessor!!)
 
-        eyeTracker = EyeTracker(eyeTrackerConfig)
+        eyeTracker = EyeTracker(eyeTrackerConfig!!)
     }
 
 
@@ -136,6 +143,13 @@ class PreviewActivity : AppCompatActivity() {
                 Utils.matToBitmap(processedMat, bitmap)
                 runOnUiThread {
                     imageView.setImageBitmap(bitmap)
+
+                    if (eyeTracker != null && eyeTrackerConfig != null) {
+                        ResultUtils.updateEyeStatus(leftEyeStatusView,
+                                eyeTracker!!.leftEyeBestGazeDirectionIndex, eyeTrackerConfig!!)
+                        ResultUtils.updateEyeStatus(rightEyeStatusView,
+                                eyeTracker!!.rightEyeBestGazeDirectionIndex, eyeTrackerConfig!!)
+                    }
                 }
             }
 
