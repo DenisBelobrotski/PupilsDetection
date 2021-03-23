@@ -12,6 +12,7 @@ import org.opencv.objdetect.CascadeClassifier
 import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
 import java.io.IOException
+import kotlin.math.sqrt
 
 class OpenCvUtils {
     companion object {
@@ -70,10 +71,9 @@ class OpenCvUtils {
         }
 
         fun getRectCenter(rect: Rect): Point {
-            val rectBottomRight = rect.br()
-            val center = rect.tl()
-            center.x += rectBottomRight.x / 2
-            center.y += rectBottomRight.y / 2
+            val center = Point(rect.x.toDouble(), rect.y.toDouble())
+            center.x += rect.width * 0.5
+            center.y += rect.height * 0.5
 
             return center
         }
@@ -83,6 +83,28 @@ class OpenCvUtils {
             Utils.matToBitmap(mat, bitmap)
 
             return bitmap
+        }
+
+        fun getDifference(point1: Point, point2: Point): Point {
+            val point = Point()
+            point.x = point1.x - point2.x
+            point.y = point1.y - point2.y
+
+            return point
+        }
+
+        fun getSquaredLength(point: Point): Double {
+            return point.x * point.x + point.y * point.y
+        }
+
+        fun getLength(point: Point): Double {
+            return sqrt(getSquaredLength(point))
+        }
+
+        fun normalize(point: Point) {
+            val length = getLength(point)
+            point.x /= length
+            point.y /= length
         }
     }
 }
