@@ -24,7 +24,7 @@ class EyeTrackerConfig(
     override var drawDebugEyeRects = true
     override var drawDebugEyeMarkers = true
 
-    var gazeDirectionName = arrayOf(
+    var gazeDirectionNames = arrayOf(
             "left",
             "right",
             "top",

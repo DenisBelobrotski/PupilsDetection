@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
@@ -16,8 +17,14 @@ import by.swiftdrachen.pupilsdetection.utils.FileChooser
 
 class ImageDetectorActivity : AppCompatActivity() {
     private val imageFileChooser by lazy { FileChooser(this, "image", "*") }
+
     private val resultImageView by lazy { findViewById<ImageView>(R.id.result_image_view) }
+
+    private val leftEyeStatusView by lazy { findViewById<TextView>(R.id.left_eye_direction_status) }
+    private val rightEyeStatusView by lazy { findViewById<TextView>(R.id.right_eye_direction_status) }
+
     private val newSessionButton by lazy { findViewById<Button>(R.id.new_session_button) }
+    private val clearSessionButton by lazy { findViewById<Button>(R.id.clear_session_button) }
     private val chooseImageButton by lazy { findViewById<Button>(R.id.choose_image_button) }
     private val processImageButton by lazy { findViewById<Button>(R.id.process_image_button) }
 
@@ -32,6 +39,10 @@ class ImageDetectorActivity : AppCompatActivity() {
             sessionFileManager = SessionFileManager(this)
         }
 
+        clearSessionButton.setOnClickListener {
+            sessionFileManager = null
+        }
+
         chooseImageButton.setOnClickListener {
             imageFileChooser.choose()
         }
@@ -40,7 +51,7 @@ class ImageDetectorActivity : AppCompatActivity() {
             processImage()
         }
 
-        sessionFileManager = SessionFileManager(this)
+//        sessionFileManager = SessionFileManager(this)
 //        sessionFileManager?.isDebugImageSavingEnabled = true
 //        sessionFileManager?.isDebugLogSavingEnabled = true
     }
@@ -120,11 +131,28 @@ class ImageDetectorActivity : AppCompatActivity() {
             resultImageView.setImageBitmap(resultBitmap)
         }
 
+
+        updateEyeStatus(
+                leftEyeStatusView, eyeTracker.leftEyeBestGazeDirectionIndex, eyeTrackerConfig)
+        updateEyeStatus(
+                rightEyeStatusView, eyeTracker.rightEyeBestGazeDirectionIndex, eyeTrackerConfig)
+
+
         faceDetector.clear()
         eyeDetector.clear()
         eyePreciser.clear()
         pupilDetector.clear()
 
         Toast.makeText(this, "Detection done", Toast.LENGTH_LONG).show()
+    }
+}
+
+
+private fun updateEyeStatus(textView: TextView, directionIndex: Int, config: EyeTrackerConfig) {
+    textView.text = when {
+        directionIndex >= 0 -> config.gazeDirectionNames[directionIndex]
+        directionIndex == EyeTracker.CENTER_GAZE_DIRECTION_INDEX -> config.gazeDirectionCenterName
+        directionIndex == EyeTracker.DEFAULT_GAZE_DIRECTION_INDEX -> config.gazeDirectionNoResultName
+        else -> config.gazeDirectionNoResultName
     }
 }

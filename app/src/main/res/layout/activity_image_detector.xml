@@ -18,6 +18,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/left_eye_direction_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/left_eye_direction_status_default_text"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/right_eye_direction_status"
+        app:layout_constraintTop_toBottomOf="@id/result_image_view" />
+
+    <TextView
+        android:id="@+id/right_eye_direction_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/left_eye_direction_status_default_text"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintLeft_toRightOf="@id/left_eye_direction_status"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/result_image_view" />
+
     <Button
         android:id="@+id/new_session_button"
         android:layout_width="wrap_content"
@@ -26,17 +46,27 @@
         android:text="@string/new_session"
         app:layout_constraintBottom_toTopOf="@id/choose_image_button"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/clear_session_button" />
+
+    <Button
+        android:id="@+id/clear_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/clear_session"
+        app:layout_constraintBottom_toTopOf="@id/process_image_button"
+        app:layout_constraintLeft_toRightOf="@id/new_session_button"
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/choose_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/choose_image"
-        app:layout_constraintBottom_toTopOf="@id/process_image_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toLeftOf="@id/process_image_button" />
 
     <Button
         android:id="@+id/process_image_button"
@@ -45,7 +75,7 @@
         android:layout_marginBottom="50dp"
         android:text="@string/process_image"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/choose_image_button"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

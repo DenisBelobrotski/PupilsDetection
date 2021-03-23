@@ -4,8 +4,12 @@
     <string name="processed_image">Processed image</string>
     <string name="image_detector">Image detector</string>
     <string name="new_session">New session</string>
+    <string name="clear_session">Clear session</string>
     <string name="choose_image">Choose image</string>
     <string name="process_image">Process image</string>
+
+    <string name="left_eye_direction_status_default_text">Left eye - empty</string>
+    <string name="right_eye_direction_status_default_text">Right eye - empty</string>
 
     <string name="camera_detector">Camera detector</string>
 
