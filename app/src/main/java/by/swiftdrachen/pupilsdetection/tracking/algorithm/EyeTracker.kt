@@ -15,6 +15,8 @@ import org.opencv.imgproc.Imgproc
 class EyeTracker(private val config: IEyeTrackerConfig) {
     private val processingImage = Mat()
     private var detectedFaceRect: Rect? = null
+    private var detectedLeftEyeRect: Rect? = null
+    private var detectedRightEyeRect: Rect? = null
 
     var sourceImage: Mat? = null
     var faceDetector: IRectDetector? = null
@@ -24,6 +26,10 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
 
     val lastDetectedFaceRect: Rect?
         get() = detectedFaceRect
+    val lastDetectedLeftEyeRect: Rect?
+        get() = detectedLeftEyeRect
+    val lastDetectedRightEyeRect: Rect?
+        get() = detectedRightEyeRect
 
     fun detect() {
         sessionFileManager?.addLog("EyeTracker - detection started")
@@ -61,9 +67,9 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
 
         detectedFaceRect = getBestFace(faceRects)
 
-        detectedFaceRect?.let {
-            val sourceFaceRoi = sourceImage.submat(it)
-            val processingFaceRoi = processingImage.submat(it)
+        detectedFaceRect?.let { faceRect ->
+            val sourceFaceRoi = sourceImage.submat(faceRect)
+            val processingFaceRoi = processingImage.submat(faceRect)
             sessionFileManager?.addLog("EyeTracker - face submats taken")
 
             sessionFileManager?.saveMat(processingFaceRoi, "detected_face", true)
@@ -73,30 +79,20 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
             eyeDetector.detect()
             sessionFileManager?.addLog("EyeTracker - eye detection done")
 
-            tryDrawFaceRect(sourceImage, it)
+            tryDrawFaceRect(sourceImage, faceRect)
+
 
             val eyeRects = eyeDetector.detectedRects
-            for (eyeIndex in eyeRects.indices) {
-                val eyeRect = eyeRects[eyeIndex]
-                val sourceEyeRoi = sourceFaceRoi.submat(eyeRect)
-                val processingEyeRoi = processingFaceRoi.submat(eyeRect)
-                sessionFileManager?.addLog("EyeTracker - eye submats taken")
+            val eyes = getBestEyes(eyeRects, sourceFaceRoi)
 
-                sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_${eyeIndex}", true)
-                sessionFileManager?.addLog("EyeTracker - detected eye saved ($eyeIndex)", true)
+            detectedLeftEyeRect = eyes.first
+            detectedRightEyeRect = eyes.second
 
-
-                eyeProcessor.sourceImage = sourceEyeRoi
-                eyeProcessor.process()
-                sessionFileManager?.addLog("EyeTracker - eye processed")
-
-
-                tryDrawEyeRect(sourceFaceRoi, eyeRect)
-                tryDrawEyeMarkers(sourceEyeRoi, eyeProcessor)
-
-
-                // TODO: call every few frames (https://github.com/opencv/opencv/issues/4961)
-//                System.gc()
+            detectedLeftEyeRect?.let { leftEyeRect ->
+                processEye(leftEyeRect, eyeProcessor, sourceFaceRoi, processingFaceRoi, true)
+            }
+            detectedRightEyeRect?.let { rightEyeRect ->
+                processEye(rightEyeRect, eyeProcessor, sourceFaceRoi, processingFaceRoi, false)
             }
         }
 
@@ -125,19 +121,41 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     }
 
 
+    private fun processEye(
+            eyeRect: Rect, eyeProcessor: EyeProcessor,
+            sourceFaceRoi: Mat, processingFaceRoi: Mat,
+            left: Boolean) {
+        val sourceEyeRoi = sourceFaceRoi.submat(eyeRect)
+        val processingEyeRoi = processingFaceRoi.submat(eyeRect)
+        sessionFileManager?.addLog("EyeTracker - eye submats taken")
+
+        val eyeName = if (left) "left" else "right"
+        sessionFileManager?.saveMat(processingEyeRoi, "detected_eye_$eyeName", true)
+        sessionFileManager?.addLog("EyeTracker - detected eye saved ($eyeName)", true)
+
+
+        eyeProcessor.sourceImage = sourceEyeRoi
+        eyeProcessor.process()
+        sessionFileManager?.addLog("EyeTracker - eye processed")
+
+
+        tryDrawEyeRect(sourceFaceRoi, eyeRect, left)
+        tryDrawEyeMarkers(sourceEyeRoi, eyeProcessor)
+    }
+
+
     private fun tryDrawFaceRect(sourceImage: Mat, faceRect: Rect) {
         if (config.drawDebugFaceRects) {
-            val color = Scalar(0.0, 255.0, 0.0, 255.0)
             val thickness = DrawUtils.getLineThicknessForMat(sourceImage, 100, 1)
             val lineType = Imgproc.LINE_8
-            Imgproc.rectangle(sourceImage, faceRect, color, thickness, lineType)
+            Imgproc.rectangle(sourceImage, faceRect, faceRectColor, thickness, lineType)
         }
     }
 
 
-    private fun tryDrawEyeRect(sourceFaceRoi: Mat, eyeRect: Rect) {
+    private fun tryDrawEyeRect(sourceFaceRoi: Mat, eyeRect: Rect, left: Boolean) {
         if (config.drawDebugEyeRects) {
-            val color = Scalar(255.0, 0.0, 255.0, 255.0)
+            val color = if (left) leftEyeRectColor else rightEyeRectColor
             val thickness = DrawUtils.getLineThicknessForMat(sourceFaceRoi, 100, 1)
             val lineType = Imgproc.LINE_8
             Imgproc.rectangle(sourceFaceRoi, eyeRect, color, thickness, lineType)
@@ -147,16 +165,13 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
 
     private fun tryDrawEyeMarkers(sourceEyeRoi: Mat, eyeProcessor: EyeProcessor) {
         if (config.drawDebugEyeMarkers) {
-            val roiCenterColor = Scalar(255.0, 255.0, 0.0, 255.0)
-            val eyeCenterColor = Scalar(0.0, 255.0, 0.0, 255.0)
-            val pupilCenterColor = Scalar(255.0, 0.0, 0.0, 255.0)
             val markerSize = DrawUtils.getMarkerSizeForMat(sourceEyeRoi, 20, 2)
             val thickness = DrawUtils.getLineThicknessForMat(sourceEyeRoi, 30, 1)
             val lineType = Imgproc.LINE_8
             val roiCenter = OpenCvUtils.getMatCenter(sourceEyeRoi)
 
             Imgproc.drawMarker(
-                    sourceEyeRoi, roiCenter, roiCenterColor,
+                    sourceEyeRoi, roiCenter, eyeRoiCenterColor,
                     Imgproc.MARKER_DIAMOND, markerSize, thickness, lineType)
             Imgproc.drawMarker(
                     sourceEyeRoi, eyeProcessor.detectedEyeCenter, eyeCenterColor,
@@ -170,18 +185,18 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
     }
 
 
-    private fun getBestFace(detectedRects: List<Rect>): Rect? {
-        val rectsCount = detectedRects.count()
+    private fun getBestFace(faceRects: List<Rect>): Rect? {
+        val rectsCount = faceRects.count()
 
         if (rectsCount == 0) {
             return null
         }
 
-        var relevantFaceRect = detectedRects[0]
+        var relevantFaceRect = faceRects[0]
         var maxArea = relevantFaceRect.area()
 
         for (index in 1 until rectsCount) {
-            val currentRect = detectedRects[index]
+            val currentRect = faceRects[index]
             val currentArea = currentRect.area()
 
             if (currentArea > maxArea) {
@@ -191,5 +206,56 @@ class EyeTracker(private val config: IEyeTrackerConfig) {
         }
 
         return relevantFaceRect
+    }
+
+
+    private fun getBestEyes(eyeRects: List<Rect>, faceMat: Mat): Pair<Rect?, Rect?> {
+        val rectsCount = eyeRects.count()
+
+        if (rectsCount == 0) {
+            return Pair(null, null)
+        }
+
+        var leftEye: Rect? = null
+        var rightEye: Rect? = null
+
+        val faceCenter = OpenCvUtils.getMatCenter(faceMat)
+
+        for (index in 0 until rectsCount) {
+            val eyeRect = eyeRects[index]
+            val eyeCenter = OpenCvUtils.getRectCenter(eyeRect)
+
+            if (eyeCenter.y > faceCenter.y) {
+                continue
+            }
+
+            if (leftEye == null && eyeCenter.x < faceCenter.x) {
+                leftEye = eyeRect
+                continue
+            }
+
+            if (rightEye == null && eyeCenter.x > faceCenter.x) {
+                rightEye = eyeRect
+                continue
+            }
+        }
+
+        return if (!config.mirrorEyes) {
+            Pair(leftEye, rightEye)
+        } else {
+            Pair(rightEye, leftEye)
+        }
+    }
+
+
+    companion object {
+        val faceRectColor = Scalar(0.0, 255.0, 0.0, 255.0)
+
+        val leftEyeRectColor = Scalar(255.0, 0.0, 255.0, 255.0)
+        val rightEyeRectColor = Scalar(0.0, 255.0, 255.0, 255.0)
+
+        val eyeRoiCenterColor = Scalar(255.0, 255.0, 0.0, 255.0)
+        val eyeCenterColor = Scalar(0.0, 255.0, 0.0, 255.0)
+        val pupilCenterColor = Scalar(255.0, 0.0, 0.0, 255.0)
     }
 }

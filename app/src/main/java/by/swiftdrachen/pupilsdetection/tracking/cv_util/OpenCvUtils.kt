@@ -7,6 +7,7 @@ import by.swiftdrachen.pupilsdetection.tracking.utils.FileSystemUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
+import org.opencv.core.Rect
 import org.opencv.objdetect.CascadeClassifier
 import org.opencv.osgi.OpenCVNativeLoader
 import java.io.File
@@ -66,6 +67,15 @@ class OpenCvUtils {
 
         fun getMatCenter(mat: Mat): Point {
             return Point((mat.cols() / 2).toDouble(), (mat.rows() / 2).toDouble())
+        }
+
+        fun getRectCenter(rect: Rect): Point {
+            val rectBottomRight = rect.br()
+            val center = rect.tl()
+            center.x += rectBottomRight.x / 2
+            center.y += rectBottomRight.y / 2
+
+            return center
         }
 
         fun getBitmapFromMat(mat: Mat, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
