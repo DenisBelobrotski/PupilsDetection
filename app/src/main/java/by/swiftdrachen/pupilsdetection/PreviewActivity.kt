@@ -68,7 +68,7 @@ class PreviewActivity : AppCompatActivity() {
 
 
         initEyeTracker()
-        initGazeCenterViews()
+        initGazeCenterViews(gazeCenterValueView, gazeCenterSliderView, eyeTrackerConfig!!)
     }
 
 
@@ -121,16 +121,16 @@ class PreviewActivity : AppCompatActivity() {
     }
 
 
-    private fun initGazeCenterViews() {
-        gazeCenterSliderView.progress =
-            eyeTrackerConfig?.gazeCenterDirectionOffset ?: gazeCenterSliderView.progress
+    private fun initGazeCenterViews(
+            valueView: TextView, sliderView: SeekBar, eyeTrackerConfig: EyeTrackerConfig) {
+        sliderView.progress = eyeTrackerConfig.gazeCenterDirectionOffset
 
-        gazeCenterValueView.text = "${gazeCenterSliderView.progress}%"
+        valueView.text = "${sliderView.progress}%"
 
-        gazeCenterSliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                gazeCenterValueView.text = "${progress}%"
-                eyeTrackerConfig?.gazeCenterDirectionOffset = progress
+                valueView.text = "${progress}%"
+                eyeTrackerConfig.gazeCenterDirectionOffset = progress
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

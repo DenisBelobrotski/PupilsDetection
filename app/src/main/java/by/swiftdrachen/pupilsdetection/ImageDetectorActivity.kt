@@ -2,11 +2,9 @@ package by.swiftdrachen.pupilsdetection
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSeekBar
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
 import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
@@ -23,6 +21,9 @@ class ImageDetectorActivity : AppCompatActivity() {
 
     private val leftEyeStatusView by lazy { findViewById<TextView>(R.id.left_eye_direction_status) }
     private val rightEyeStatusView by lazy { findViewById<TextView>(R.id.right_eye_direction_status) }
+
+    private val gazeCenterValueView by lazy { findViewById<TextView>(R.id.gaze_center_value) }
+    private val gazeCenterSliderView by lazy { findViewById<AppCompatSeekBar>(R.id.gaze_center_slider) }
 
     private val newSessionButton by lazy { findViewById<Button>(R.id.new_session_button) }
     private val clearSessionButton by lazy { findViewById<Button>(R.id.clear_session_button) }
@@ -56,6 +57,8 @@ class ImageDetectorActivity : AppCompatActivity() {
 //        sessionFileManager = SessionFileManager(this)
 //        sessionFileManager?.isDebugImageSavingEnabled = true
 //        sessionFileManager?.isDebugLogSavingEnabled = true
+
+        initGazeCenterViews(gazeCenterValueView, gazeCenterSliderView)
     }
 
 
@@ -112,6 +115,7 @@ class ImageDetectorActivity : AppCompatActivity() {
 
         val eyeTrackerConfig = EyeTrackerConfig(faceDetector, eyeDetector, eyeProcessor)
         eyeTrackerConfig.sessionFileManager = sessionFileManager
+        eyeTrackerConfig.gazeCenterDirectionOffset = gazeCenterSliderView.progress
 
         val eyeTracker = EyeTracker(eyeTrackerConfig)
         eyeTracker.sourceImage = chosenMat
@@ -148,5 +152,20 @@ class ImageDetectorActivity : AppCompatActivity() {
         pupilDetector.clear()
 
         Toast.makeText(this, "Detection done", Toast.LENGTH_LONG).show()
+    }
+
+
+    private fun initGazeCenterViews(valueView: TextView, sliderView: SeekBar) {
+        valueView.text = "${sliderView.progress}%"
+
+        sliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                valueView.text = "${progress}%"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 }

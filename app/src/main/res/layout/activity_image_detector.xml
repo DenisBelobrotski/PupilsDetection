@@ -40,6 +40,30 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/result_image_view" />
 
+    <TextView
+        android:id="@+id/gaze_center_value"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/gaze_center_value_default"
+        android:textAlignment="center"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/gaze_center_slider" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/gaze_center_slider"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:max="50"
+        android:min="0"
+        android:progress="10"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintLeft_toRightOf="@id/gaze_center_value"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <Button
         android:id="@+id/new_session_button"
         android:layout_width="wrap_content"
