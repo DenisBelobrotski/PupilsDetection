@@ -15,4 +15,5 @@
 
     <string name="choose_file_tip">Choose media file</string>
     <string name="file_manager_error">Cannot find any file manager</string>
+    <string name="gaze_center_value_default">20%</string>
 </resources>

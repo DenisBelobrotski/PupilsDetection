@@ -19,6 +19,7 @@ class EyeTrackerConfig(
             Point(0.0, -1.0), //top
             Point(0.0, 1.0), //bottom
     )
+    override var gazeCenterDirectionOffset: Int = 20
 
     override var drawDebugFaceRects = true
     override var drawDebugEyeRects = true

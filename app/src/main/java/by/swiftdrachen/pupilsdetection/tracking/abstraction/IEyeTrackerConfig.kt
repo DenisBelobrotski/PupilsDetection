@@ -12,6 +12,7 @@ interface IEyeTrackerConfig {
 
     var mirrorEyes: Boolean
     var gazeDirections: Array<Point>
+    var gazeCenterDirectionOffset: Int
 
     var drawDebugFaceRects: Boolean
     var drawDebugEyeRects: Boolean

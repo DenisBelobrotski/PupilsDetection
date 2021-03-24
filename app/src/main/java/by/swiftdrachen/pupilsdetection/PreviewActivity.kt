@@ -12,9 +12,11 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -37,6 +39,9 @@ class PreviewActivity : AppCompatActivity() {
 
     private val leftEyeStatusView by lazy { findViewById<TextView>(R.id.left_eye_direction_status) }
     private val rightEyeStatusView by lazy { findViewById<TextView>(R.id.right_eye_direction_status) }
+
+    private val gazeCenterValueView by lazy { findViewById<TextView>(R.id.gaze_center_value) }
+    private val gazeCenterSliderView by lazy { findViewById<AppCompatSeekBar>(R.id.gaze_center_slider) }
 
 
     private var eyeTrackerConfig: EyeTrackerConfig? = null
@@ -63,6 +68,7 @@ class PreviewActivity : AppCompatActivity() {
 
 
         initEyeTracker()
+        initGazeCenterViews()
     }
 
 
@@ -112,6 +118,25 @@ class PreviewActivity : AppCompatActivity() {
         eyeTrackerConfig = EyeTrackerConfig(faceDetector!!, eyeDetector!!, eyeProcessor!!)
 
         eyeTracker = EyeTracker(eyeTrackerConfig!!)
+    }
+
+
+    private fun initGazeCenterViews() {
+        gazeCenterSliderView.progress =
+            eyeTrackerConfig?.gazeCenterDirectionOffset ?: gazeCenterSliderView.progress
+
+        gazeCenterValueView.text = "${gazeCenterSliderView.progress}%"
+
+        gazeCenterSliderView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                gazeCenterValueView.text = "${progress}%"
+                eyeTrackerConfig?.gazeCenterDirectionOffset = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
 

@@ -101,12 +101,12 @@ class EyeTracker(val config: IEyeTrackerConfig) {
             detectedLeftEyeRect?.let { leftEyeRect ->
                 processEye(leftEyeRect, eyeProcessor, sourceFaceRoi, processingFaceRoi, true)
                 leftEyeGazeDirectionIndex =
-                    getBestDirectionIndex(config.gazeDirections, eyeProcessor)
+                    getBestDirectionIndex(config.gazeDirections, eyeProcessor, leftEyeRect)
             }
             detectedRightEyeRect?.let { rightEyeRect ->
                 processEye(rightEyeRect, eyeProcessor, sourceFaceRoi, processingFaceRoi, false)
                 rightEyeGazeDirectionIndex =
-                    getBestDirectionIndex(config.gazeDirections, eyeProcessor)
+                    getBestDirectionIndex(config.gazeDirections, eyeProcessor, rightEyeRect)
             }
         }
 
@@ -217,7 +217,8 @@ class EyeTracker(val config: IEyeTrackerConfig) {
     }
 
 
-    private fun getBestDirectionIndex(directions: Array<Point>, eyeProcessor: EyeProcessor): Int {
+    private fun getBestDirectionIndex(
+            directions: Array<Point>, eyeProcessor: EyeProcessor, eyeRect: Rect): Int {
         val directionsCount = directions.count()
 
         if (directionsCount == 0) {
@@ -226,6 +227,17 @@ class EyeTracker(val config: IEyeTrackerConfig) {
 
         val diff = OpenCvUtils.getDifference(
                 eyeProcessor.detectedPupilCenter, eyeProcessor.detectedEyeCenter)
+
+        val diffLength = OpenCvUtils.getLength(diff)
+        val halfMaxLength =
+            OpenCvUtils.getLength(Point(eyeRect.width.toDouble(), eyeRect.height.toDouble())) * 0.5
+
+        val lengthFactor = (diffLength / halfMaxLength * 100).toInt()
+        val minCenterFactor = config.gazeCenterDirectionOffset
+
+        if (lengthFactor < minCenterFactor) {
+            return CENTER_GAZE_DIRECTION_INDEX
+        }
 
         var maxDotProductIndex = 0
         var maxDotProduct = directions[maxDotProductIndex].dot(diff)

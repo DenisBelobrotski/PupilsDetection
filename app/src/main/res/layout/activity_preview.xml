@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -49,6 +50,30 @@
         android:textColor="@color/eye_direction_status"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/left_eye_direction_status"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/gaze_center_value"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/gaze_center_value_default"
+        android:textAlignment="center"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintBottom_toTopOf="@id/left_eye_direction_status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/gaze_center_slider" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/gaze_center_slider"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:max="30"
+        android:min="0"
+        android:progress="10"
+        app:layout_constraintBottom_toTopOf="@id/left_eye_direction_status"
+        app:layout_constraintLeft_toRightOf="@id/gaze_center_value"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
