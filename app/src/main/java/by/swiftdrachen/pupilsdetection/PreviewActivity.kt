@@ -30,6 +30,8 @@ import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturationConf
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
+import java.time.Duration
+import java.time.LocalDateTime
 
 class PreviewActivity : AppCompatActivity() {
 
@@ -45,6 +47,8 @@ class PreviewActivity : AppCompatActivity() {
     private val gazeCenterValueView by lazy { findViewById<TextView>(R.id.gaze_center_value) }
     private val gazeCenterSliderView by lazy { findViewById<AppCompatSeekBar>(R.id.gaze_center_slider) }
 
+    private val fpsMeterView by lazy { findViewById<TextView>(R.id.fps_meter) }
+
 
     private var eyeTrackerConfig: EyeTrackerConfig? = null
     private var eyeTracker: EyeTracker? = null
@@ -56,6 +60,8 @@ class PreviewActivity : AppCompatActivity() {
     private var eyeProcessor: EyeProcessor? = null
 
     private val tempMat: Mat = Mat()
+
+    private var tempDate: LocalDateTime? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,6 +166,8 @@ class PreviewActivity : AppCompatActivity() {
         imageAnalysis = ImageAnalysis(imageAnalysisConfig)
         imageAnalysis.analyzer =
             ImageAnalysis.Analyzer { _, _ ->
+                checkFps()
+
                 val bitmap = textureView.bitmap ?: return@Analyzer
 
                 Utils.bitmapToMat(bitmap, tempMat)
@@ -183,6 +191,21 @@ class PreviewActivity : AppCompatActivity() {
             }
 
         return imageAnalysis
+    }
+
+
+    private fun checkFps() {
+        val currentDate = LocalDateTime.now()
+        tempDate?.let {
+            val delta = Duration.between(it, currentDate)
+            val frameRate = delta.toMillis()
+            val fps = (1.0 / (frameRate * 0.001)).toInt()
+
+            runOnUiThread {
+                fpsMeterView.text = "$fps fps"
+            }
+        }
+        tempDate = currentDate
     }
 
 
