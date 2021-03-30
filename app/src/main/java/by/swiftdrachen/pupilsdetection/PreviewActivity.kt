@@ -30,6 +30,8 @@ import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturationConf
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
+import java.time.Duration
+import java.time.LocalDateTime
 
 class PreviewActivity : AppCompatActivity() {
 
@@ -56,6 +58,8 @@ class PreviewActivity : AppCompatActivity() {
     private var eyeProcessor: EyeProcessor? = null
 
     private val tempMat: Mat = Mat()
+
+    private var tempDate: LocalDateTime? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,6 +164,18 @@ class PreviewActivity : AppCompatActivity() {
         imageAnalysis = ImageAnalysis(imageAnalysisConfig)
         imageAnalysis.analyzer =
             ImageAnalysis.Analyzer { _, _ ->
+                val currentDate = LocalDateTime.now()
+                tempDate?.let {
+                    val delta = Duration.between(it, currentDate)
+                    val frameRate = delta.toMillis()
+                    val fps = (1.0 / frameRate).toInt()
+
+                    runOnUiThread {
+                        gazeCenterValueView.text = fps.toString()
+                    }
+                }
+                tempDate = currentDate
+
                 val bitmap = textureView.bitmap ?: return@Analyzer
 
                 Utils.bitmapToMat(bitmap, tempMat)
