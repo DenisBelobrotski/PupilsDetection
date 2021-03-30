@@ -47,6 +47,8 @@ class PreviewActivity : AppCompatActivity() {
     private val gazeCenterValueView by lazy { findViewById<TextView>(R.id.gaze_center_value) }
     private val gazeCenterSliderView by lazy { findViewById<AppCompatSeekBar>(R.id.gaze_center_slider) }
 
+    private val fpsMeterView by lazy { findViewById<TextView>(R.id.fps_meter) }
+
 
     private var eyeTrackerConfig: EyeTrackerConfig? = null
     private var eyeTracker: EyeTracker? = null
@@ -164,17 +166,7 @@ class PreviewActivity : AppCompatActivity() {
         imageAnalysis = ImageAnalysis(imageAnalysisConfig)
         imageAnalysis.analyzer =
             ImageAnalysis.Analyzer { _, _ ->
-                val currentDate = LocalDateTime.now()
-                tempDate?.let {
-                    val delta = Duration.between(it, currentDate)
-                    val frameRate = delta.toMillis()
-                    val fps = (1.0 / frameRate).toInt()
-
-                    runOnUiThread {
-                        gazeCenterValueView.text = fps.toString()
-                    }
-                }
-                tempDate = currentDate
+                checkFps()
 
                 val bitmap = textureView.bitmap ?: return@Analyzer
 
@@ -199,6 +191,21 @@ class PreviewActivity : AppCompatActivity() {
             }
 
         return imageAnalysis
+    }
+
+
+    private fun checkFps() {
+        val currentDate = LocalDateTime.now()
+        tempDate?.let {
+            val delta = Duration.between(it, currentDate)
+            val frameRate = delta.toMillis()
+            val fps = (1.0 / (frameRate * 0.001)).toInt()
+
+            runOnUiThread {
+                fpsMeterView.text = "$fps fps"
+            }
+        }
+        tempDate = currentDate
     }
 
 
