@@ -7,6 +7,6 @@ class EyeCascadeClassifierConfig : ICascadeClassifierConfig {
     override var scaleFactor: Double = 1.3
     override var minNeighbours: Int = 5
     override var flags: Int = 0
-    override var minSizeRatio: Double = 0.0
-    override var maxSizeRatio: Double = 1.0
+    override var minSizeRatio: Double = 0.1
+    override var maxSizeRatio: Double = 0.6
 }

@@ -85,6 +85,8 @@ class ImageDetectorActivity : AppCompatActivity() {
         }
 
         val faceDetectorConfig = FaceCascadeClassifierConfig()
+//        faceDetectorConfig.minSizeRatio = 0.0
+//        faceDetectorConfig.maxSizeRatio = 1.0
         val faceCascade =
             OpenCvUtils.loadCascadeFromAssets(this, faceDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(faceDetectorConfig.assetPath)
@@ -92,6 +94,8 @@ class ImageDetectorActivity : AppCompatActivity() {
             CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
+//        eyeDetectorConfig.minSizeRatio = 0.0
+//        eyeDetectorConfig.maxSizeRatio = 1.0
         val eyeCascade =
             OpenCvUtils.loadCascadeFromAssets(this, eyeDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(eyeDetectorConfig.assetPath)

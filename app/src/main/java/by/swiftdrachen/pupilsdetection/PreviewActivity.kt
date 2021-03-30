@@ -25,6 +25,8 @@ import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
+import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturation
+import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturationConfig
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -49,6 +51,7 @@ class PreviewActivity : AppCompatActivity() {
     private var faceDetector: FaceCascadeClassifierDetector? = null
     private var eyeDetector: EyeCascadeClassifierDetector? = null
     private var eyePreciser: EyePreciserCenter? = null
+//    private var eyePreciser: EyePreciserSaturation? = null
     private var pupilDetector: PupilDetector? = null
     private var eyeProcessor: EyeProcessor? = null
 
@@ -106,12 +109,13 @@ class PreviewActivity : AppCompatActivity() {
         val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
         val eyeProcessorConfig = EyeProcessorConfig()
-
         val pupilDetectorConfig = PupilDetectorConfig()
+//        val eyePreciserConfig = EyePreciserSaturationConfig()
 
         faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
         eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
         eyePreciser = EyePreciserCenter()
+//        eyePreciser = EyePreciserSaturation(eyePreciserConfig)
         pupilDetector = PupilDetector(pupilDetectorConfig)
         eyeProcessor = EyeProcessor(eyeProcessorConfig, eyePreciser!!, pupilDetector!!)
 
@@ -140,7 +144,7 @@ class PreviewActivity : AppCompatActivity() {
     }
 
 
-    private fun startImageAnalysis(): ImageAnalysis? {
+    private fun startImageAnalysis(): ImageAnalysis {
         val analyzerThread = HandlerThread("Analysis")
         analyzerThread.start()
 

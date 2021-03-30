@@ -54,17 +54,21 @@ class EyeTracker(val config: IEyeTrackerConfig) {
         sessionFileManager?.saveMat(sourceImage, "source_image", true)
         sessionFileManager?.addLog("EyeTracker - source image saved", true)
 
-        Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY, 1)
-        sessionFileManager?.addLog("EyeTracker - RGB to GRAY done")
+        if (config.grayscaleEnabled) {
+            Imgproc.cvtColor(sourceImage, processingImage, Imgproc.COLOR_RGB2GRAY, 1)
+            sessionFileManager?.addLog("EyeTracker - RGB to GRAY done")
 
-        sessionFileManager?.saveMat(processingImage, "gray_image", true)
-        sessionFileManager?.addLog("EyeTracker - gray image saved", true)
+            sessionFileManager?.saveMat(processingImage, "gray_image", true)
+            sessionFileManager?.addLog("EyeTracker - gray image saved", true)
+        }
 
-        Imgproc.equalizeHist(processingImage, processingImage)
-        sessionFileManager?.addLog("EyeTracker - image histogram equalized")
+        if (config.histogramEqualizationEnabled) {
+            Imgproc.equalizeHist(processingImage, processingImage)
+            sessionFileManager?.addLog("EyeTracker - image histogram equalized")
 
-        sessionFileManager?.saveMat(processingImage, "hist_equalized_image", true)
-        sessionFileManager?.addLog("EyeTracker - histogram equalized image saved", true)
+            sessionFileManager?.saveMat(processingImage, "hist_equalized_image", true)
+            sessionFileManager?.addLog("EyeTracker - histogram equalized image saved", true)
+        }
 
         faceDetector.processingImage = processingImage
         faceDetector.detect()

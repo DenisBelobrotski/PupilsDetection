@@ -59,7 +59,7 @@
         android:layout_marginBottom="20dp"
         android:max="50"
         android:min="0"
-        android:progress="10"
+        android:progress="20"
         app:layout_constraintBottom_toTopOf="@id/new_session_button"
         app:layout_constraintLeft_toRightOf="@id/gaze_center_value"
         app:layout_constraintRight_toRightOf="parent" />

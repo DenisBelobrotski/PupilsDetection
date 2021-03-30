@@ -10,6 +10,9 @@ interface IEyeTrackerConfig {
     val eyeProcessor: EyeProcessor
     var sessionFileManager: SessionFileManager?
 
+    var grayscaleEnabled: Boolean
+    var histogramEqualizationEnabled: Boolean
+
     var mirrorEyes: Boolean
     var gazeDirections: Array<Point>
     var gazeCenterDirectionOffset: Int

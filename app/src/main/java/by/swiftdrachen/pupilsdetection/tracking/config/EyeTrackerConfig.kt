@@ -12,6 +12,9 @@ class EyeTrackerConfig(
         override val eyeProcessor: EyeProcessor) : IEyeTrackerConfig {
     override var sessionFileManager: SessionFileManager? = null
 
+    override var grayscaleEnabled = true
+    override var histogramEqualizationEnabled = true
+
     override var mirrorEyes = false
     override var gazeDirections = arrayOf(
             Point(-1.0, 0.0), //left
