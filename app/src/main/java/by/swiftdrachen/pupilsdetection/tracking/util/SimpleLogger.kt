@@ -1,4 +1,4 @@
-package by.swiftdrachen.pupilsdetection.tracking.utils
+package by.swiftdrachen.pupilsdetection.tracking.util
 
 import java.time.Duration
 import java.time.LocalDateTime

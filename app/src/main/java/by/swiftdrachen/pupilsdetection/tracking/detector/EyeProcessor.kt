@@ -3,7 +3,7 @@ package by.swiftdrachen.pupilsdetection.tracking.detector
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessorConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IPointDetector
 import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Point

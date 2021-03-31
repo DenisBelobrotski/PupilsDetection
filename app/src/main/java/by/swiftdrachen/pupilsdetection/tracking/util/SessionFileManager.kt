@@ -1,9 +1,8 @@
-package by.swiftdrachen.pupilsdetection.tracking.utils
+package by.swiftdrachen.pupilsdetection.tracking.util
 
 import android.content.Context
 import android.graphics.Bitmap
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
-import org.opencv.android.Utils
 import org.opencv.core.Mat
 import java.io.File
 import java.io.FileOutputStream

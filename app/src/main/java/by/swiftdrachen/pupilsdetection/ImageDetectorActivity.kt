@@ -10,7 +10,7 @@ import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 

@@ -6,7 +6,7 @@ import by.swiftdrachen.pupilsdetection.tracking.cv_util.DrawUtils
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
 import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect

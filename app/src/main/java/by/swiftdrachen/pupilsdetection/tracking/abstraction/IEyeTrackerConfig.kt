@@ -1,7 +1,7 @@
 package by.swiftdrachen.pupilsdetection.tracking.abstraction
 
 import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import org.opencv.core.Point
 
 interface IEyeTrackerConfig {

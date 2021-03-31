@@ -3,7 +3,7 @@ package by.swiftdrachen.pupilsdetection.tracking.config
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeTrackerConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
 import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.utils.SessionFileManager
+import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import org.opencv.core.Point
 
 class EyeTrackerConfig(

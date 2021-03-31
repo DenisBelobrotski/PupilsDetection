@@ -3,7 +3,7 @@ package by.swiftdrachen.pupilsdetection.tracking.cv_util
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import by.swiftdrachen.pupilsdetection.tracking.utils.FileSystemUtils
+import by.swiftdrachen.pupilsdetection.tracking.util.FileSystemUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.Point
