@@ -1,3 +1,4 @@
+include ':eye_tracking_library'
 include ':opencv-sdk'
 include ':app'
 project(':opencv-sdk').projectDir = new File(rootDir, 'opencv-4.4.0-android-sdk/sdk/')
