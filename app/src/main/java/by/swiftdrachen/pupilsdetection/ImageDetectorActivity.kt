@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
-import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
-import by.swiftdrachen.pupilsdetection.tracking.config.*
-import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
-import by.swiftdrachen.pupilsdetection.tracking.detector.CascadeClassifierDetector
-import by.swiftdrachen.pupilsdetection.tracking.detector.EyePreciserCenter
-import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
-import by.swiftdrachen.pupilsdetection.tracking.detector.PupilDetector
-import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
-import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
+import by.swiftdrachen.eye_tracking_library.algorithm.EyeTracker
+import by.swiftdrachen.eye_tracking_library.config.*
+import by.swiftdrachen.eye_tracking_library.cv_util.OpenCvUtils
+import by.swiftdrachen.eye_tracking_library.detector.CascadeClassifierDetector
+import by.swiftdrachen.eye_tracking_library.detector.EyePreciserCenter
+import by.swiftdrachen.eye_tracking_library.detector.EyeProcessor
+import by.swiftdrachen.eye_tracking_library.detector.PupilDetector
+import by.swiftdrachen.eye_tracking_library.exception.CascadeClassifierNotLoadedException
+import by.swiftdrachen.eye_tracking_library.util.SessionFileManager
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 

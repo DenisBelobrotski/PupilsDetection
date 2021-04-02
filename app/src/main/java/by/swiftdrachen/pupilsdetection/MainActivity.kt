@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
+import by.swiftdrachen.eye_tracking_library.cv_util.OpenCvUtils
 
 class MainActivity : AppCompatActivity() {
     private val imageDetectorButton by lazy { findViewById<Button>(R.id.image_detector_button) }

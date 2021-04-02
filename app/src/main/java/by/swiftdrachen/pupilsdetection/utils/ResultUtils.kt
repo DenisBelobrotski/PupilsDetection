@@ -1,8 +1,8 @@
 package by.swiftdrachen.pupilsdetection.utils
 
 import android.widget.TextView
-import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
-import by.swiftdrachen.pupilsdetection.tracking.config.EyeTrackerConfig
+import by.swiftdrachen.eye_tracking_library.algorithm.EyeTracker
+import by.swiftdrachen.eye_tracking_library.config.EyeTrackerConfig
 
 class ResultUtils {
     companion object {

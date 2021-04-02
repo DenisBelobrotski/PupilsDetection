@@ -20,11 +20,11 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
-import by.swiftdrachen.pupilsdetection.tracking.config.*
-import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
-import by.swiftdrachen.pupilsdetection.tracking.detector.*
-import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
+import by.swiftdrachen.eye_tracking_library.algorithm.EyeTracker
+import by.swiftdrachen.eye_tracking_library.config.*
+import by.swiftdrachen.eye_tracking_library.cv_util.OpenCvUtils
+import by.swiftdrachen.eye_tracking_library.detector.*
+import by.swiftdrachen.eye_tracking_library.exception.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
