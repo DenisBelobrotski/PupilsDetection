@@ -1,5 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.detector
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessor
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessorConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IPointDetector
 import by.swiftdrachen.pupilsdetection.tracking.exception.EyeTrackerNotPreparedException
@@ -11,9 +12,9 @@ import org.opencv.core.Range
 import org.opencv.imgproc.Imgproc
 
 class EyeProcessor(
-        private val config: IEyeProcessorConfig,
-        private val eyePreciser: IPointDetector,
-        private val pupilDetector: IPointDetector) {
+        override val config: IEyeProcessorConfig,
+        override val eyePreciser: IPointDetector,
+        override val pupilDetector: IPointDetector) : IEyeProcessor {
 
     private val processingImage = Mat()
 
@@ -22,15 +23,15 @@ class EyeProcessor(
     private var mutableDetectedEyeCenter = Point()
     private var mutableDetectedPupilCenter = Point()
 
-    var sourceImage: Mat? = null
-    var sessionFileManager: SessionFileManager? = null
+    override var sourceImage: Mat? = null
+    override var sessionFileManager: SessionFileManager? = null
 
-    val detectedEyeCenter: Point
+    override val detectedEyeCenter: Point
         get() = mutableDetectedEyeCenter
-    val detectedPupilCenter: Point
+    override val detectedPupilCenter: Point
         get() = mutableDetectedPupilCenter
 
-    fun process() {
+    override fun process() {
         sessionFileManager?.addLog("EyeProcessor - process started")
 
         if (sourceImage == null) {

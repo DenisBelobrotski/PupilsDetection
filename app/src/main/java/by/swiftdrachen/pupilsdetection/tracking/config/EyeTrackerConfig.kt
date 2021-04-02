@@ -1,15 +1,15 @@
 package by.swiftdrachen.pupilsdetection.tracking.config
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessor
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeTrackerConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
-import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
 import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import org.opencv.core.Point
 
 class EyeTrackerConfig(
         override val faceDetector: IRectDetector,
         override val eyeDetector: IRectDetector,
-        override val eyeProcessor: EyeProcessor) : IEyeTrackerConfig {
+        override val eyeProcessor: IEyeProcessor) : IEyeTrackerConfig {
     override var sessionFileManager: SessionFileManager? = null
 
     override var grayscaleEnabled = true

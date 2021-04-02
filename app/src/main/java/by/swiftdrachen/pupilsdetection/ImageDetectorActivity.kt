@@ -8,7 +8,10 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import by.swiftdrachen.pupilsdetection.tracking.algorithm.EyeTracker
 import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
-import by.swiftdrachen.pupilsdetection.tracking.detector.*
+import by.swiftdrachen.pupilsdetection.tracking.detector.CascadeClassifierDetector
+import by.swiftdrachen.pupilsdetection.tracking.detector.EyePreciserCenter
+import by.swiftdrachen.pupilsdetection.tracking.detector.EyeProcessor
+import by.swiftdrachen.pupilsdetection.tracking.detector.PupilDetector
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
 import by.swiftdrachen.pupilsdetection.tracking.util.SessionFileManager
 import by.swiftdrachen.pupilsdetection.utils.FileChooser
@@ -90,7 +93,7 @@ class ImageDetectorActivity : AppCompatActivity() {
         val faceCascade =
             OpenCvUtils.loadCascadeFromAssets(this, faceDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(faceDetectorConfig.assetPath)
-        val faceCascadeClassifierDetector =
+        val faceDetector =
             CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
@@ -99,14 +102,11 @@ class ImageDetectorActivity : AppCompatActivity() {
         val eyeCascade =
             OpenCvUtils.loadCascadeFromAssets(this, eyeDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(eyeDetectorConfig.assetPath)
-        val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
+        val eyeDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
         val eyeProcessorConfig = EyeProcessorConfig()
 
         val pupilDetectorConfig = PupilDetectorConfig()
-
-        val faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
-        val eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
 
         val eyePreciser = EyePreciserCenter()
         eyePreciser.sessionFileManager = sessionFileManager

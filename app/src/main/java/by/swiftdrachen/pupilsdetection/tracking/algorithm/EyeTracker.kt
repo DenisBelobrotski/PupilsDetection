@@ -1,5 +1,6 @@
 package by.swiftdrachen.pupilsdetection.tracking.algorithm
 
+import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeProcessor
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IEyeTrackerConfig
 import by.swiftdrachen.pupilsdetection.tracking.abstraction.IRectDetector
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.DrawUtils
@@ -18,7 +19,7 @@ class EyeTracker(val config: IEyeTrackerConfig) {
 
     private val faceDetector: IRectDetector = config.faceDetector
     private val eyeDetector: IRectDetector = config.eyeDetector
-    private val eyeProcessor: EyeProcessor = config.eyeProcessor
+    private val eyeProcessor: IEyeProcessor = config.eyeProcessor
     private val sessionFileManager: SessionFileManager? = config.sessionFileManager
 
     private var detectedFaceRect: Rect? = null
@@ -199,7 +200,7 @@ class EyeTracker(val config: IEyeTrackerConfig) {
 
 
     private fun processEye(
-            eyeRect: Rect, eyeProcessor: EyeProcessor,
+            eyeRect: Rect, eyeProcessor: IEyeProcessor,
             sourceFaceRoi: Mat, processingFaceRoi: Mat,
             left: Boolean) {
         val sourceEyeRoi = sourceFaceRoi.submat(eyeRect)
@@ -222,7 +223,7 @@ class EyeTracker(val config: IEyeTrackerConfig) {
 
 
     private fun getBestDirectionIndex(
-            directions: Array<Point>, eyeProcessor: EyeProcessor, eyeRect: Rect): Int {
+            directions: Array<Point>, eyeProcessor: IEyeProcessor, eyeRect: Rect): Int {
         val directionsCount = directions.count()
 
         if (directionsCount == 0) {
@@ -279,7 +280,7 @@ class EyeTracker(val config: IEyeTrackerConfig) {
     }
 
 
-    private fun tryDrawEyeMarkers(sourceEyeRoi: Mat, eyeProcessor: EyeProcessor) {
+    private fun tryDrawEyeMarkers(sourceEyeRoi: Mat, eyeProcessor: IEyeProcessor) {
         if (config.drawDebugEyeMarkers) {
             val markerSize = DrawUtils.getMarkerSizeForMat(sourceEyeRoi, 20, 2)
             val thickness = DrawUtils.getLineThicknessForMat(sourceEyeRoi, 30, 1)

@@ -7,7 +7,7 @@ import org.opencv.core.Point
 interface IEyeTrackerConfig {
     val faceDetector: IRectDetector
     val eyeDetector: IRectDetector
-    val eyeProcessor: EyeProcessor
+    val eyeProcessor: IEyeProcessor
     var sessionFileManager: SessionFileManager?
 
     var grayscaleEnabled: Boolean

@@ -25,8 +25,6 @@ import by.swiftdrachen.pupilsdetection.tracking.config.*
 import by.swiftdrachen.pupilsdetection.tracking.cv_util.OpenCvUtils
 import by.swiftdrachen.pupilsdetection.tracking.detector.*
 import by.swiftdrachen.pupilsdetection.tracking.exception.CascadeClassifierNotLoadedException
-import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturation
-import by.swiftdrachen.pupilsdetection.tracking.legacy.EyePreciserSaturationConfig
 import by.swiftdrachen.pupilsdetection.utils.ResultUtils
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -52,8 +50,8 @@ class PreviewActivity : AppCompatActivity() {
 
     private var eyeTrackerConfig: EyeTrackerConfig? = null
     private var eyeTracker: EyeTracker? = null
-    private var faceDetector: FaceCascadeClassifierDetector? = null
-    private var eyeDetector: EyeCascadeClassifierDetector? = null
+    private var faceDetector: CascadeClassifierDetector? = null
+    private var eyeDetector: CascadeClassifierDetector? = null
     private var eyePreciser: EyePreciserCenter? = null
 //    private var eyePreciser: EyePreciserSaturation? = null
     private var pupilDetector: PupilDetector? = null
@@ -105,21 +103,18 @@ class PreviewActivity : AppCompatActivity() {
         val faceCascade =
             OpenCvUtils.loadCascadeFromAssets(this, faceDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(faceDetectorConfig.assetPath)
-        val faceCascadeClassifierDetector =
-            CascadeClassifierDetector(faceCascade, faceDetectorConfig)
+        faceDetector = CascadeClassifierDetector(faceCascade, faceDetectorConfig)
 
         val eyeDetectorConfig = EyeCascadeClassifierConfig()
         val eyeCascade =
             OpenCvUtils.loadCascadeFromAssets(this, eyeDetectorConfig.assetPath)
                 ?: throw CascadeClassifierNotLoadedException(eyeDetectorConfig.assetPath)
-        val eyeCascadeClassifierDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
+        eyeDetector = CascadeClassifierDetector(eyeCascade, eyeDetectorConfig)
 
         val eyeProcessorConfig = EyeProcessorConfig()
         val pupilDetectorConfig = PupilDetectorConfig()
 //        val eyePreciserConfig = EyePreciserSaturationConfig()
 
-        faceDetector = FaceCascadeClassifierDetector(faceCascadeClassifierDetector)
-        eyeDetector = EyeCascadeClassifierDetector(eyeCascadeClassifierDetector)
         eyePreciser = EyePreciserCenter()
 //        eyePreciser = EyePreciserSaturation(eyePreciserConfig)
         pupilDetector = PupilDetector(pupilDetectorConfig)
