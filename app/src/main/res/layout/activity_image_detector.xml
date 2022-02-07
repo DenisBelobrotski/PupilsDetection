@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImageDetectorActivity">
+
+    <ImageView
+        android:id="@+id/result_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="480dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/left_eye_direction_status"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/left_eye_direction_status_default_text"
+        android:textAlignment="center"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/right_eye_direction_status"
+        app:layout_constraintTop_toBottomOf="@id/result_image_view" />
+
+    <TextView
+        android:id="@+id/right_eye_direction_status"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/right_eye_direction_status_default_text"
+        android:textAlignment="center"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintLeft_toRightOf="@id/left_eye_direction_status"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/result_image_view" />
+
+    <TextView
+        android:id="@+id/gaze_center_value"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/gaze_center_value_default"
+        android:textAlignment="center"
+        android:textColor="@color/eye_direction_status"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/gaze_center_slider" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/gaze_center_slider"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:max="50"
+        android:min="0"
+        android:progress="20"
+        app:layout_constraintBottom_toTopOf="@id/new_session_button"
+        app:layout_constraintLeft_toRightOf="@id/gaze_center_value"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/new_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/new_session"
+        app:layout_constraintBottom_toTopOf="@id/choose_image_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/clear_session_button" />
+
+    <Button
+        android:id="@+id/clear_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/clear_session"
+        app:layout_constraintBottom_toTopOf="@id/process_image_button"
+        app:layout_constraintLeft_toRightOf="@id/new_session_button"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/choose_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/choose_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/process_image_button" />
+
+    <Button
+        android:id="@+id/process_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/process_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/choose_image_button"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

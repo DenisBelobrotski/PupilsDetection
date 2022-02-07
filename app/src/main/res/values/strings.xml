@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PupilsDetection</string>
+
+    <string name="processed_image">Processed image</string>
+    <string name="image_detector">Image detector</string>
+    <string name="new_session">New session</string>
+    <string name="clear_session">Clear session</string>
+    <string name="choose_image">Choose image</string>
+    <string name="process_image">Process image</string>
+
+    <string name="left_eye_direction_status_default_text">Left eye - empty</string>
+    <string name="right_eye_direction_status_default_text">Right eye - empty</string>
+
+    <string name="camera_detector">Camera detector</string>
+
+    <string name="choose_file_tip">Choose media file</string>
+    <string name="file_manager_error">Cannot find any file manager</string>
+    <string name="gaze_center_value_default">20%</string>
+    <string name="fps_meter_default">0 fps</string>
+</resources>
